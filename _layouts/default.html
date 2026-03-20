@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="./index.html" style="text-decoration: none; color: black;">{{ site.title }}</a></h1>
+    </header>
+    <hr>
+    <main>
+        {{ content }}
+    </main>
+    <footer>
+        <hr>
+        <p>© 2026 {{ site.title }} - Auto Updated by GitHub Actions</p>
+    </footer>
+</body>
+</html>
