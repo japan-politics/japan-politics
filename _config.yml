@@ -1,9 +1,7 @@
 title: 日本国会議員データベース
 description: 衆議院・参議院の議員情報を自動更新するプロジェクト
 
-theme: null
-
-baseurl: "/japan-politics"
+baseurl: ""
 url: "https://japan-politics.github.io"
 
 kramdown:
