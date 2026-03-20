@@ -7,122 +7,62 @@ import re
 
 def get_shugiin_data():
     all_members = []
-    base_url = "https://www.shugiin.go.jp/internet/itdb_annai.nsf/html/statics/syu/{giin_page}giin.htm"
-    img_base_url = "https://www.shugiin.go.jp"
     headers = {'User-Agent': 'Mozilla/5.0'}
-
     for i in range(1, 11):
-        url = base_url.format(giin_page=i)
-        print(f"衆議院 {i}ページ目取得中...")
+        url = f"https://www.shugiin.go.jp/internet/itdb_annai.nsf/html/statics/syu/{i}giin.htm"
         try:
             response = requests.get(url, headers=headers)
             response.encoding = 'shift_jis'
             soup = BeautifulSoup(response.text, 'html.parser')
-            tables = soup.find_all('table')
-            for table in tables:
-                for row in table.find_all('tr'):
-                    cols = row.find_all('td')
-                    if len(cols) >= 3:
-                        name_raw = cols[0].get_text(strip=True)
-                        # 「氏名」という文字や空行をスキップ
-                        if not name_raw or "氏名" in name_raw or "一覧" in name_raw:
-                            continue
-
-                        name = name_raw.replace('　', '').replace(' ', '').replace('君', '')
-                        party = cols[1].get_text(strip=True).replace('\n', '').replace(' ', '')
-                        district = cols[2].get_text(strip=True).replace('\n', '').replace(' ', '')
+            for row in soup.find_all('tr'):
+                cols = row.find_all('td')
+                if len(cols) >= 3:
+                    a_tag = cols[0].find('a')
+                    if a_tag:
+                        name = a_tag.get_text(strip=True).replace('君', '').replace('　', '')
+                        party = cols[1].get_text(strip=True).replace('\n', '').strip()
+                        # 党派名の正規化（衆議院のサイトは「自民」と「自由民主党」が混在する場合があるため）
+                        party = '自民' if '自民' in party else party
+                        party = '立憲' if '中道' in party else party # 会派名から推測
                         
                         img_url = ""
-                        a_tag = cols[0].find('a')
-                        if a_tag and 'href' in a_tag.attrs:
-                            href = a_tag['href']
-                            match = re.search(r'id=([^&]+)', href)
-                            if match:
-                                giin_id = match.group(1)
-                                img_url = f"{img_base_url}/internet/itdb_annai.nsf/html/statics/giin/photo/{giin_id}.jpg"
-
-                        all_members.append({
-                            'chamber': '衆議院',
-                            'name': name,
-                            'party': party,
-                            'district': district,
-                            'img_url': img_url
-                        })
+                        match = re.search(r'id=([^&]+)', a_tag.get('href', ''))
+                        if match:
+                            img_url = f"https://www.shugiin.go.jp/internet/itdb_annai.nsf/html/statics/giin/photo/{match.group(1)}.jpg"
+                        
+                        all_members.append({'chamber': '衆議院', 'name': name, 'party': party, 'district': cols[2].get_text(strip=True), 'img_url': img_url})
             time.sleep(1)
-        except Exception as e:
-            print(f"衆議院 {i}ページ目でエラー: {e}")
+        except: continue
     return all_members
 
 def get_sangiin_data():
     all_members = []
     url = "https://www.sangiin.go.jp/japanese/joho1/kousei/giin/221/giin.htm"
-    img_base_url = "https://www.sangiin.go.jp"
-    headers = {'User-Agent': 'Mozilla/5.0'}
-
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         response.encoding = 'utf-8'
         soup = BeautifulSoup(response.text, 'html.parser')
-        
-        table = soup.find('table', class_='list_h25') or soup.find('table')
+        table = soup.find('table', class_='list_h25')
         if table:
             for row in table.find_all('tr'):
-                # <th>（見出し）が含まれる行は完全にスキップ
-                if row.find('th'):
-                    continue
-                    
                 cols = row.find_all('td')
-                # 参議院の有効なデータ行は通常6列程度あります
                 if len(cols) >= 4:
-                    name_raw = cols[0].get_text(strip=True)
-                    # 不要な単語が含まれる行を除外
-                    if not name_raw or "氏名" in name_raw or "当選回数" in name_raw:
-                        continue
-
-                    name = name_raw.replace('　', '').replace(' ', '')
-                    party = cols[2].get_text(strip=True).replace('\n', '').replace(' ', '')
-                    district = cols[3].get_text(strip=True).replace('\n', '').replace(' ', '')
-                    
-                    img_url = ""
                     a_tag = cols[0].find('a')
-                    if a_tag and 'href' in a_tag.attrs:
-                        href = a_tag['href']
-                        # 参議院のパス構造 profile/70xxxxx.htm からIDを抽出
-                        match = re.search(r'profile/(\d+)\.htm', href)
-                        if match:
-                            giin_id = match.group(1)
-                            img_url = f"{img_base_url}/japanese/joho1/kousei/giin/photo/{giin_id}.jpg"
-
-                    all_members.append({
-                        'chamber': '参議院',
-                        'name': name,
-                        'party': party,
-                        'district': district,
-                        'img_url': img_url
-                    })
-    except Exception as e:
-        print(f"参議院データ取得エラー: {e}")
-    
+                    if a_tag:
+                        name = a_tag.get_text(strip=True).replace('　', '')
+                        match = re.search(r'profile/(\d+)\.htm', a_tag.get('href', ''))
+                        img_url = f"https://www.sangiin.go.jp/japanese/joho1/kousei/giin/photo/{match.group(1)}.jpg" if match else ""
+                        all_members.append({'chamber': '参議院', 'name': name, 'party': cols[2].get_text(strip=True), 'district': cols[3].get_text(strip=True), 'img_url': img_url})
+    except: pass
     return all_members
 
 def main():
-    print("データ取得を開始します...")
-    shugiin = get_shugiin_data()
-    sangiin = get_sangiin_data()
-    
-    total_data = shugiin + sangiin
-    
-    if total_data:
-        df = pd.DataFrame(total_data)
-        # 列の順番をHTMLの表示順（顔写真以外）に合わせる
-        df = df[['chamber', 'name', 'party', 'district', 'img_url']]
+    data = get_shugiin_data() + get_sangiin_data()
+    if data:
+        df = pd.DataFrame(data)
         os.makedirs('_data', exist_ok=True)
-        # CSV保存
         df.to_csv('_data/politicians.csv', index=False, encoding='utf-8-sig')
-        print(f"成功: 合計 {len(df)} 名のデータを保存しました。")
-    else:
-        print("データが取得できませんでした。")
-        exit(1)
+        print(f"Update Successful: {len(df)} members.")
 
 if __name__ == "__main__":
     main()

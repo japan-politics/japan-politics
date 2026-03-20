@@ -3,33 +3,69 @@ layout: default
 title: ホーム
 ---
 
-# 日本国会議員データベース
+# 議席占有率（政党別）
 
-GitHub Actionsにより毎日自動更新される、衆議院・参議院の議員情報サイトです。
+<div class="grid-3">
+    <div>
+        <h3 style="text-align:center">全議員</h3>
+        <div class="chart-container"><canvas id="chartAll"></canvas></div>
+    </div>
+    <div>
+        <h3 style="text-align:center">衆議院</h3>
+        <div class="chart-container"><canvas id="chartSyu"></canvas></div>
+    </div>
+    <div>
+        <h3 style="text-align:center">参議院</h3>
+        <div class="chart-container"><canvas id="chartSan"></canvas></div>
+    </div>
+</div>
+
+<div style="text-align:center; margin-top: 2rem;">
+    [👉 詳細な議員一覧・検索はこちら]({{ '/list.html' | relative_url }}){: .btn }
+</div>
 
 {% assign all = site.data.politicians %}
-{% assign shugiin = all | where: "chamber", "衆議院" %}
-{% assign sangiin = all | where: "chamber", "参議院" %}
+{% comment %} 勢力データ生成 {% endcomment %}
+<script>
+const rulingParties = ['自民', '公明'];
+const partyColors = {
+    '自民': '#1e40af', '公明': '#0ea5e9', '立憲': '#2563eb', '中道': '#2563eb',
+    '維新': '#10b981', '国民': '#f59e0b', '共産': '#ef4444', 'れいわ': '#ec4899', '無': '#94a3b8'
+};
 
-## 議席数サマリ
-* **全議員数**: {{ all.size }} 名
-* **衆議院**: {{ shugiin.size }} 名
-* **参議院**: {{ sangiin.size }} 名
+function createChart(id, rawData) {
+    const labels = Object.keys(rawData);
+    const data = Object.values(rawData);
+    const borderColors = labels.map(p => rulingParties.includes(p) ? '#ff0000' : '#ffffff');
+    const borderWidths = labels.map(p => rulingParties.includes(p) ? 5 : 1);
+    const backgroundColors = labels.map(p => partyColors[p] || '#cbd5e1');
 
-## 衆議院：政党別人数
-{% assign ldp_s = shugiin | where: "party", "自民" %}
-{% assign cdp_s = shugiin | where: "party", "中道" %}
-{% assign ishin_s = shugiin | where: "party", "維新" %}
-* **自民**: {{ ldp_s.size }} 名
-* **立憲（中道）**: {{ cdp_s.size }} 名
-* **維新**: {{ ishin_s.size }} 名
+    new Chart(document.getElementById(id), {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: borderWidths
+            }]
+        },
+        options: { plugins: { legend: { position: 'bottom' } } }
+    });
+}
 
-## 参議院：政党別人数
-{% assign ldp_c = sangiin | where: "party", "自民" %}
-{% assign cdp_c = sangiin | where: "party", "立憲" %}
-{% assign ishin_c = sangiin | where: "party", "維新" %}
-* **自民**: {{ ldp_c.size }} 名
-* **立憲**: {{ cdp_c.size }} 名
-* **維新**: {{ ishin_c.size }} 名
+{% assign syu = all | where: "chamber", "衆議院" %}
+{% assign san = all | where: "chamber", "参議院" %}
 
-[👉 全議員名簿を見る](list.html)
+// データの流し込み
+createChart('chartAll', { 
+    {% assign groups = all | group_by: "party" %}{% for g in groups %}'{{ g.name }}': {{ g.size }}{% unless forloop.last %},{% endunless %}{% endfor %}
+});
+createChart('chartSyu', {
+    {% assign groups = syu | group_by: "party" %}{% for g in groups %}'{{ g.name }}': {{ g.size }}{% unless forloop.last %},{% endunless %}{% endfor %}
+});
+createChart('chartSan', {
+    {% assign groups = san | group_by: "party" %}{% for g in groups %}'{{ g.name }}': {{ g.size }}{% unless forloop.last %},{% endunless %}{% endfor %}
+});
+</script>
