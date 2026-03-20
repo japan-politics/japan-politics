@@ -1,11 +1,85 @@
-:root { --primary: #1a365d; --bg: #f8fafc; --border: #e2e8f0; }
-body { font-family: sans-serif; background: var(--bg); margin: 0; }
-.dashboard-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-.card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-.section-title { font-size: 1.5rem; border-left: 6px solid var(--primary); padding-left: 1rem; margin-bottom: 2rem; color: var(--primary); font-weight: 800; }
-.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-#politicianTable thead th { background: var(--primary) !important; color: white !important; }
-.giin-photo { width: 60px; height: 75px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); background: #eee; }
-.badge { padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; color: white; display: inline-block; }
-.badge-shugiin { background: #e53e3e; }
-.badge-sangiin { background: #3182ce; }
+/* Whitehouse.gov Inspired Design System */
+:root {
+    --wh-navy: #002654; /* 象徴的な深いネイビー */
+    --wh-blue: #0056b3;
+    --wh-accent: #e41c39; /* 活気あるレッド */
+    --wh-bg: #ffffff;
+    --wh-text: #212121;
+    --wh-gray: #f0f0f0;
+}
+
+body {
+    font-family: "Mercury Display", "Shippori Mincho", Georgia, serif; /* セリフ体主体 */
+    background-color: var(--wh-bg);
+    color: var(--wh-text);
+    margin: 0;
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--wh-navy);
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    border-bottom: 5px solid var(--wh-blue);
+}
+
+header h1 {
+    font-size: 2.2rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+/* カードではなく「セクション」で区切るのがWhitehouse流 */
+.section-block {
+    margin-bottom: 5rem;
+    border-top: 1px solid #ccc;
+    padding-top: 2rem;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: var(--wh-navy);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* ドーナツグラフの鮮明化 */
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 3rem;
+}
+
+/* 名簿テーブル：装飾を排し、可読性を最大化 */
+#politicianTable { width: 100% !important; border-top: 2px solid var(--wh-navy); }
+#politicianTable thead th {
+    background: transparent !important;
+    color: var(--wh-navy) !important;
+    font-weight: bold;
+    border-bottom: 2px solid var(--wh-navy) !important;
+}
+
+.giin-photo {
+    width: 65px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    filter: grayscale(10%); /* 落ち着いたトーン */
+}
+
+.badge {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.badge-shugiin { background: var(--wh-accent); color: white; }
+.badge-sangiin { background: var(--wh-blue); color: white; }

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 政治家アーカイブ
+title: Home
 ---
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
@@ -11,18 +11,21 @@ title: 政治家アーカイブ
 <script src="{{ '/assets/js/dashboard.js' | relative_url }}"></script>
 
 <div class="dashboard-container">
-    <div class="card">
-        <h2 class="section-title">議会勢力分析</h2>
+    <div class="section-block">
+        <h2 class="section-title">Parliamentary Strength Analysis</h2>
         <div class="chart-grid">
-            <div><strong>全議員合計</strong><canvas id="chartAll"></canvas></div>
-            <div><strong>衆議院</strong><canvas id="chartSyu"></canvas></div>
-            <div><strong>参議院</strong><canvas id="chartSan"></canvas></div>
+            <div><strong style="display:block;text-align:center;">NATIONAL DIET</strong><canvas id="chartAll"></canvas></div>
+            <div><strong style="display:block;text-align:center;color:var(--wh-accent);">REPRESENTATIVES</strong><canvas id="chartSyu"></canvas></div>
+            <div><strong style="display:block;text-align:center;color:var(--wh-blue);">COUNCILLORS</strong><canvas id="chartSan"></canvas></div>
         </div>
     </div>
-    <div class="card">
-        <h2 class="section-title">議員一覧</h2>
-        <table id="politicianTable" class="display" style="width:100%">
-            <thead><tr><th>顔写真</th><th>院</th><th>氏名</th><th>政党</th><th>選挙区</th></tr></thead>
+
+    <div class="section-block">
+        <h2 class="section-title">Official Registry of Members</h2>
+        <table id="politicianTable" class="display">
+            <thead>
+                <tr><th>IMAGE</th><th>CHAMBER</th><th>NAME</th><th>PARTY</th><th>DISTRICT</th></tr>
+            </thead>
             <tbody>
                 {% for p in site.data.politicians %}
                 <tr><td>{{ p.img_url }}</td><td>{{ p.chamber }}</td><td>{{ p.name }}</td><td>{{ p.party }}</td><td>{{ p.district }}</td></tr>
