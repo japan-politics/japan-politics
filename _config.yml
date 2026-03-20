@@ -1,0 +1,13 @@
+title: 日本国会議員データベース
+description: 衆議院・参議院の議員情報を自動更新するプロジェクト
+
+# テーマを一旦コメントアウトまたは削除して、自作レイアウトを確実に使うようにします
+# remote_theme: pages-themes/cayman@v0.2.0
+
+# サイトのURL設定（自分のOrganization名とリポジトリ名に合わせてください）
+# URLが https://org-name.github.io/repo-name/ の場合：
+baseurl: "/japan-politics" # リポジトリ名が japan-politics の場合
+url: "" 
+
+kramdown:
+  input: GFM # GitHub Flavored Markdownを使用

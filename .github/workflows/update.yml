@@ -12,8 +12,11 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+# .github/workflows/update.yml の permissions 部分を修正
     permissions:
       contents: write
+      pages: write      # デプロイ用に必要
+      id-token: write   # デプロイ用に必要
 
     steps:
       - name: Checkout repository
