@@ -8,7 +8,6 @@ import re
 def get_shugiin_data():
     all_members = []
     base_url = "https://www.shugiin.go.jp/internet/itdb_annai.nsf/html/statics/syu/{giin_page}giin.htm"
-    # 画像のベースURL
     img_base_url = "https://www.shugiin.go.jp"
     headers = {'User-Agent': 'Mozilla/5.0'}
 
@@ -24,26 +23,20 @@ def get_shugiin_data():
                 for row in table.find_all('tr'):
                     cols = row.find_all('td')
                     if len(cols) >= 3:
-                        # 名前、党派、選挙区を取得
                         name_raw = cols[0].get_text(strip=True)
                         name = name_raw.replace('　', '').replace(' ', '').replace('君', '')
-                        party = cols[1].get_text(strip=True)
-                        district = cols[2].get_text(strip=True)
+                        party = cols[1].get_text(strip=True).replace('\n', '')
+                        district = cols[2].get_text(strip=True).replace('\n', '')
                         
-                        # 画像URLを取得 (aタグのhrefからIDを特定し、画像URLを推測する)
                         img_url = ""
                         a_tag = cols[0].find('a')
                         if a_tag and 'href' in a_tag.attrs:
                             href = a_tag['href']
-                            # hrefから議員IDを抽出 (例: OpenDocument&id=...)
+                            # 衆議院のID抽出 (id=...)
                             match = re.search(r'id=([^&]+)', href)
                             if match:
                                 giin_id = match.group(1)
-                                # 衆議院の画像URLパターン (IDに基づいて画像が配置されている)
-                                # 実際にはIDと画像名が完全に一致しない場合があるため、
-                                # 確実な方法は詳細ページへアクセスしてimgタグを探すことだが、
-                                # 負荷軽減のため、ここでは推測URLを使用（要確認）
-                                # ※多くの場合はID.jpgだが、例外もある
+                                # 衆議院の画像パス
                                 img_url = f"{img_base_url}/internet/itdb_annai.nsf/html/statics/giin/photo/{giin_id}.jpg"
 
                         if name and name != '氏名' and '一覧' not in name:
@@ -52,7 +45,7 @@ def get_shugiin_data():
                                 'party': party,
                                 'district': district,
                                 'chamber': '衆議院',
-                                'img_url': img_url # 画像URLを追加
+                                'img_url': img_url
                             })
             time.sleep(1)
         except Exception as e:
@@ -61,8 +54,8 @@ def get_shugiin_data():
 
 def get_sangiin_data():
     all_members = []
-    url = "https://www.sangiin.go.jp/japanese/joho1/kousei/giin/213/giin.htm"
-    # 画像のベースURL
+    # 参議院は回次(221等)が変わる可能性があるため、現在の議員一覧ページを指定
+    url = "https://www.sangiin.go.jp/japanese/joho1/kousei/giin/221/giin.htm"
     img_base_url = "https://www.sangiin.go.jp"
     headers = {'User-Agent': 'Mozilla/5.0'}
 
@@ -71,27 +64,25 @@ def get_sangiin_data():
         response.encoding = 'utf-8'
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # 参議院のテーブル構造を解析
         table = soup.find('table', class_='list_h25') or soup.find('table')
         if table:
             for row in table.find_all('tr'):
                 cols = row.find_all('td')
-                if len(cols) >= 3:
+                if len(cols) >= 4: # 参議院は列数が多い
                     name_raw = cols[0].get_text(strip=True)
                     name = name_raw.replace('　', '').replace(' ', '')
                     party = cols[2].get_text(strip=True)
                     district = cols[3].get_text(strip=True)
                     
-                    # 画像URLを取得 (aタグのhrefから詳細ページのURLを取得し、そこからIDを特定)
                     img_url = ""
                     a_tag = cols[0].find('a')
                     if a_tag and 'href' in a_tag.attrs:
                         href = a_tag['href']
-                        # hrefから議員IDを抽出 (例: ../giin/ID.htm)
-                        match = re.search(r'giin/([^.]+)\.htm', href)
+                        # 参議院のID抽出 (profile/70xxxxx.htm)
+                        match = re.search(r'profile/([^.]+)\.htm', href)
                         if match:
                             giin_id = match.group(1)
-                            # 参議院の画像URLパターン (ID.jpg)
+                            # 参議院の画像パス
                             img_url = f"{img_base_url}/japanese/joho1/kousei/giin/photo/{giin_id}.jpg"
 
                     if name and name != '氏名':
@@ -100,7 +91,7 @@ def get_sangiin_data():
                             'party': party,
                             'district': district,
                             'chamber': '参議院',
-                            'img_url': img_url # 画像URLを追加
+                            'img_url': img_url
                         })
     except Exception as e:
         print(f"参議院データ取得エラー: {e}")
@@ -118,11 +109,10 @@ def main():
     
     if total_data:
         df = pd.DataFrame(total_data)
-        # 列の順序を整理
         df = df[['chamber', 'name', 'party', 'district', 'img_url']]
         os.makedirs('_data', exist_ok=True)
         df.to_csv('_data/politicians.csv', index=False, encoding='utf-8-sig')
-        print(f"完了: 合計 {len(df)} 名のデータを保存しました（画像URL付き）")
+        print(f"完了: 合計 {len(df)} 名のデータを保存しました。")
     else:
         print("データが取得できませんでした。")
         exit(1)

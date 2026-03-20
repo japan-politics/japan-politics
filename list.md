@@ -2,33 +2,30 @@
 layout: default
 title: 議員一覧
 ---
+<meta name="referrer" content="no-referrer">
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <style>
-/* 顔写真のスタイル調整 */
 .giin-photo {
-    width: 50px;       /* 横幅を固定 */
-    height: auto;      /* 縦横比を維持 */
-    border-radius: 5px; /* 角を丸く */
-    border: 1px solid #ccc; /* 枠線 */
+    width: 60px;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid #eee;
+    background-color: #f9f9f9;
 }
-/* DataTablesのセル内の配置調整 */
-#politicianTable td {
-    vertical-align: middle; /* 上下中央揃え */
-}
+#politicianTable td { vertical-align: middle; }
 </style>
 
 # 議員一覧
 
-衆議院および参議院の全議員リストです。顔写真は各院の公式サイトへリンクしています。
-
 <table id="politicianTable" class="display" style="width:100%">
     <thead>
         <tr>
-            <th>顔写真</th> <th>院</th>
+            <th>顔写真</th>
+            <th>院</th>
             <th>氏名</th>
             <th>政党</th>
             <th>選挙区</th>
@@ -37,7 +34,8 @@ title: 議員一覧
     <tbody>
         {% for p in site.data.politicians %}
         <tr>
-            <td>{{ p.img_url }}</td> <td>{{ p.chamber }}</td>
+            <td>{{ p.img_url }}</td>
+            <td>{{ p.chamber }}</td>
             <td>{{ p.name }}</td>
             <td>{{ p.party }}</td>
             <td>{{ p.district }}</td>
@@ -53,20 +51,17 @@ $(document).ready(function() {
             "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json"
         },
         "pageLength": 50,
-        "order": [[ 1, "desc" ]], // 院（2列目）でソート
-        
-        // 列の定義を設定
+        "order": [[ 1, "desc" ]],
         "columnDefs": [
             {
-                "targets": 0, // 1列目（顔写真）に対して設定
-                "orderable": false, // ソート不可にする
-                "searchable": false, // 検索対象外にする
-                # データ（URL）を<img>タグに変換して表示
+                "targets": 0,
+                "orderable": false,
+                "searchable": false,
                 "render": function ( data, type, row ) {
-                    if (data) {
-                        return '<img src="' + data + '" alt="顔写真" class="giin-photo" loading="lazy">';
+                    if (data && data.length > 10) {
+                        return '<img src="' + data + '" alt="顔写真" class="giin-photo" onerror="this.src=\'https://placehold.jp/24/cccccc/ffffff/50x70.png?text=なし\'" loading="lazy">';
                     } else {
-                        return 'なし'; // 画像がない場合
+                        return 'なし';
                     }
                 }
             }
@@ -74,5 +69,3 @@ $(document).ready(function() {
     });
 });
 </script>
-
-[⬅ ホームへ戻る](index.html)
