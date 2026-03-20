@@ -1,39 +1,75 @@
-// 与党リスト（赤枠で強調）
 const rulingParties = ['自民', '維新'];
 
-// 和のカラーパレット
 const partyColors = {
-  '自民': '#9e2a1c',
-  '公明': '#b5843a',
-  '立憲': '#2d5c8a',
-  '維新': '#3d6b4f',
-  '国民': '#7a4f2d',
-  '共産': '#6b3a5e',
-  '参政': '#5a7a3a',
-  '社民': '#2a6b6b',
+  '自民':   '#3a5f8a',  // 与党: 藍青
+  '維新':   '#4a7c5f',  // 与党: 萌葱
+  '立憲':   '#7a5c3a',  // 栗茶
+  '公明':   '#8a6a2a',  // 金茶
+  '国民':   '#5a5a7a',  // 青鼠
+  '共産':   '#7a3a4a',  // 葡萄
+  '参政':   '#4a6a4a',  // 苔色
+  '社民':   '#2a6b6b',  // 青緑
   '無所属': '#888780',
-  '無':   '#888780',
+  '無':     '#888780',
 };
 const fallbackColors = [
-  '#9e2a1c','#3d6b4f','#b5843a','#2d5c8a','#7a4f2d',
-  '#6b3a5e','#5a7a3a','#2a6b6b','#888780','#b0a090'
+  '#3a5f8a','#4a7c5f','#8a6a2a','#7a5c3a','#5a5a7a',
+  '#7a3a4a','#4a6a4a','#2a6b6b','#888780','#b0a090'
 ];
 
-// データを「与党を先頭に、残りは議席数降順」に並び替える
 function sortPartyData(obj) {
   const entries = Object.entries(obj);
-
-  const ruling    = entries.filter(([l]) =>  rulingParties.includes(l))
-                           .sort((a, b) => b[1] - a[1]);
-  const nonRuling = entries.filter(([l]) => !rulingParties.includes(l))
-                           .sort((a, b) => b[1] - a[1]);
-
+  const ruling    = entries.filter(([l]) =>  rulingParties.includes(l)).sort((a,b) => b[1]-a[1]);
+  const nonRuling = entries.filter(([l]) => !rulingParties.includes(l)).sort((a,b) => b[1]-a[1]);
   const sorted = [...ruling, ...nonRuling];
-  return {
-    labels: sorted.map(([l]) => l),
-    values: sorted.map(([, v]) => v),
-  };
+  return { labels: sorted.map(([l]) => l), values: sorted.map(([,v]) => v) };
 }
+
+// 円の中心テキストを描画するカスタムプラグイン
+const centerTextPlugin = {
+  id: 'centerText',
+  afterDraw(chart) {
+    const { ctx, chartArea: { top, bottom, left, right } } = chart;
+    const cx = (left + right) / 2;
+    const cy = (top + bottom) / 2;
+
+    const selected = chart._selectedIndices || new Set();
+    const labels   = chart.data.labels;
+    const values   = chart.data.datasets[0].data;
+    const total    = values.reduce((s, v) => s + v, 0);
+
+    let selSeats = 0;
+    selected.forEach(i => { selSeats += values[i] || 0; });
+
+    ctx.save();
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (selected.size === 0) {
+      // 未選択: 総議席のみ
+      ctx.font         = `500 1.45rem 'Noto Serif JP', serif`;
+      ctx.fillStyle    = '#2d2416';
+      ctx.fillText(total, cx, cy - 6);
+      ctx.font         = `300 0.62rem 'Noto Sans JP', sans-serif`;
+      ctx.fillStyle    = '#7a6e5f';
+      ctx.fillText('総議席', cx, cy + 14);
+    } else {
+      // 選択中: 選択議席 / 総議席
+      ctx.font         = `500 1.35rem 'Noto Serif JP', serif`;
+      ctx.fillStyle    = '#2d2416';
+      ctx.fillText(selSeats, cx, cy - 14);
+      ctx.font         = `300 0.58rem 'Noto Sans JP', sans-serif`;
+      ctx.fillStyle    = '#7a6e5f';
+      ctx.fillText('─────', cx, cy + 1);
+      ctx.font         = `400 0.78rem 'Noto Serif JP', serif`;
+      ctx.fillStyle    = '#4a3f30';
+      ctx.fillText(total, cx, cy + 16);
+    }
+    ctx.restore();
+  }
+};
+
+Chart.register(centerTextPlugin);
 
 function setupDashboard(dataAll, dataSyu, dataSan) {
   const renderChart = (id, obj) => {
@@ -45,17 +81,17 @@ function setupDashboard(dataAll, dataSyu, dataSan) {
     const bgColors = labels.map((l, i) =>
       partyColors[l] || fallbackColors[i % fallbackColors.length]
     );
+    const dimColors = bgColors.map(c => c + '55'); // 非選択時の薄い色
 
-    new Chart(canvas, {
+    const chart = new Chart(canvas, {
       type: 'doughnut',
       data: {
         labels,
         datasets: [{
           data: values,
           backgroundColor: bgColors,
-          // 与党セグメントは赤枠、それ以外は背景色と同じ（境界を消す）
           borderColor: labels.map(l =>
-            rulingParties.includes(l) ? '#c0392b' : '#f8f4ee'
+            rulingParties.includes(l) ? '#b5843a' : '#f8f4ee'
           ),
           borderWidth: labels.map(l =>
             rulingParties.includes(l) ? 4 : 1
@@ -70,16 +106,55 @@ function setupDashboard(dataAll, dataSyu, dataSan) {
             labels: {
               font: { family: "'Noto Sans JP', sans-serif", size: 10 },
               color: '#4a3f30',
-              boxWidth: 10,
-              padding: 8,
-              pointStyle: 'rect',
-              usePointStyle: true,
-              // 凡例も与党を先頭にした並び順のまま表示される
+              boxWidth: 10, padding: 8,
+              pointStyle: 'rect', usePointStyle: true,
+            },
+            onClick(e, legendItem, legend) {
+              const idx     = legendItem.index;
+              const chart   = legend.chart;
+              const selected = chart._selectedIndices || (chart._selectedIndices = new Set());
+              const ds       = chart.data.datasets[0];
+              const bg       = chart._origBgColors;
+
+              if (selected.has(idx)) {
+                selected.delete(idx);
+              } else {
+                selected.add(idx);
+              }
+
+              // 選択状態に応じて色を更新
+              ds.backgroundColor = bg.map((c, i) =>
+                selected.size === 0 || selected.has(i) ? c : c + '44'
+              );
+              chart.update('none');
             }
           }
+        },
+        onClick(e, elements) {
+          if (!elements.length) return;
+          const idx      = elements[0].index;
+          const chart    = this;
+          const selected  = chart._selectedIndices || (chart._selectedIndices = new Set());
+          const ds        = chart.data.datasets[0];
+          const bg        = chart._origBgColors;
+
+          if (selected.has(idx)) {
+            selected.delete(idx);
+          } else {
+            selected.add(idx);
+          }
+
+          ds.backgroundColor = bg.map((c, i) =>
+            selected.size === 0 || selected.has(i) ? c : c + '44'
+          );
+          chart.update('none');
         }
       }
     });
+
+    // 元の色を保存
+    chart._selectedIndices = new Set();
+    chart._origBgColors    = [...bgColors];
   };
 
   renderChart('chartAll', dataAll);
