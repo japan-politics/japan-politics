@@ -2,25 +2,23 @@ name: Daily Politician Data Update
 
 on:
   schedule:
-    # 毎日 日本時間 午前0時 (UTC 15:00) に実行
-    - cron: '0 15 * * *'
+    - cron: '0 15 * * *' # 日本時間 午前0時
   push:
     branches:
-      - main  # mainブランチにPushされたら実行
-  workflow_dispatch: # ボタン一つで手動実行も可能にする
+      - main
+  workflow_dispatch: # 手動実行ボタン
 
 jobs:
   update:
     runs-on: ubuntu-latest
-# .github/workflows/update.yml の permissions 部分を修正
     permissions:
       contents: write
-      pages: write      # デプロイ用に必要
-      id-token: write   # デプロイ用に必要
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 全履歴を取得してコンフリクトを防止
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,11 +31,20 @@ jobs:
           pip install pandas requests beautifulsoup4 lxml html5lib
 
       - name: Run scraping script
-        run: python update_data.py
+        run: |
+          # 実行ログを見やすく出力
+          python update_data.py
+          echo "Scraping finished."
 
-      - name: Commit and Push if changes exist
+      - name: Commit and Push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add _data/politicians.csv
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update politician data" && git push)
+          # 差分がある場合のみコミット
+          if ! git diff --cached --exit-code --quiet; then
+            git commit -m "Update politician data [skip ci]"
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi

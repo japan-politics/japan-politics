@@ -1,49 +1,11 @@
-/* assets/css/style.css */
-:root {
-    --primary: #1a365d;
-    --bg: #f8fafc;
-    --border: #e2e8f0;
-}
-
+:root { --primary: #1a365d; --bg: #f8fafc; --border: #e2e8f0; }
+body { font-family: sans-serif; background: var(--bg); margin: 0; }
 .dashboard-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-.card {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-}
-
-.section-title {
-    font-size: 1.5rem;
-    border-left: 6px solid var(--primary);
-    padding-left: 1rem;
-    margin-bottom: 2rem;
-    color: var(--primary);
-    font-weight: 800;
-}
-
-/* テーブル・画像・バッジ設定 */
-#politicianTable_wrapper { margin-top: 1rem; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+.section-title { font-size: 1.5rem; border-left: 6px solid var(--primary); padding-left: 1rem; margin-bottom: 2rem; color: var(--primary); font-weight: 800; }
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
 #politicianTable thead th { background: var(--primary) !important; color: white !important; }
-
-.giin-photo { 
-    width: 60px; 
-    height: 75px; 
-    object-fit: cover; 
-    border-radius: 4px; 
-    border: 1px solid var(--border);
-    background: #f1f5f9;
-}
-
-.badge { 
-    padding: 3px 10px; 
-    border-radius: 12px; 
-    font-size: 0.7rem; 
-    font-weight: bold; 
-    color: white; 
-    display: inline-block;
-}
+.giin-photo { width: 60px; height: 75px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); background: #eee; }
+.badge { padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; color: white; display: inline-block; }
 .badge-shugiin { background: #e53e3e; }
 .badge-sangiin { background: #3182ce; }
