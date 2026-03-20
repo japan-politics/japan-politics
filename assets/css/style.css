@@ -1,103 +1,49 @@
+/* assets/css/style.css */
 :root {
-    --primary-color: #1a365d;    /* 濃紺：信頼と権威 */
-    --accent-color: #d4af37;     /* ゴールド：格式（控えめに使用） */
-    --bg-color: #f8fafc;        /* 薄いグレー：目に優しい背景 */
-    --text-color: #2d3748;      /* 深いグレー：可読性の高い文字色 */
-    --border-color: #e2e8f0;    /* 繊細な境界線 */
-    --shugiin-color: #e53e3e;   /* 衆議院のアクセント（朱色系） */
-    --sangiin-color: #3182ce;   /* 参議院のアクセント（群青系） */
+    --primary: #1a365d;
+    --bg: #f8fafc;
+    --border: #e2e8f0;
 }
 
-body {
-    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    line-height: 1.8;
+.dashboard-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+.card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
-/* ヘッダー：官公庁のような重厚感 */
-header {
-    background: white;
-    border-bottom: 3px solid var(--primary-color);
-    padding: 1.5rem 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-header h1 {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 20px;
+.section-title {
     font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+    border-left: 6px solid var(--primary);
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+    color: var(--primary);
+    font-weight: 800;
 }
 
-/* メインコンテナ */
-main {
-    max-width: 1000px;
-    margin: 2rem auto;
-    background: white;
-    padding: 2.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+/* テーブル・画像・バッジ設定 */
+#politicianTable_wrapper { margin-top: 1rem; }
+#politicianTable thead th { background: var(--primary) !important; color: white !important; }
+
+.giin-photo { 
+    width: 60px; 
+    height: 75px; 
+    object-fit: cover; 
+    border-radius: 4px; 
+    border: 1px solid var(--border);
+    background: #f1f5f9;
 }
 
-/* テーブルデザインの刷新 */
-table.dataTable.no-footer {
-    border-bottom: 1px solid var(--border-color) !important;
+.badge { 
+    padding: 3px 10px; 
+    border-radius: 12px; 
+    font-size: 0.7rem; 
+    font-weight: bold; 
+    color: white; 
+    display: inline-block;
 }
-
-#politicianTable {
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-#politicianTable thead th {
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: 600;
-    padding: 12px;
-    border-bottom: none;
-}
-
-#politicianTable tbody td {
-    padding: 15px 12px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-/* 顔写真の円形・高品位化 */
-.giin-photo {
-    width: 60px;
-    height: 75px; /* 日本の証明写真比率 */
-    object-fit: cover;
-    border-radius: 4px;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    background-color: #eee;
-}
-
-/* 院別バッジ：一目で判別可能に */
-.badge {
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: white;
-}
-.badge-shugiin { background-color: var(--shugiin-color); }
-.badge-sangiin { background-color: var(--sangiin-color); }
-
-/* DataTables 検索窓・ページネーションのモダン化 */
-.dataTables_wrapper .dataTables_filter input {
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 5px 10px;
-    margin-left: 10px;
-}
-
-/* モバイル対応 */
-@media (max-width: 768px) {
-    main { padding: 1rem; margin: 1rem; }
-    .giin-photo { width: 45px; height: 56px; }
-}
+.badge-shugiin { background: #e53e3e; }
+.badge-sangiin { background: #3182ce; }

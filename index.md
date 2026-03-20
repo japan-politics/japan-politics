@@ -1,66 +1,53 @@
 ---
 layout: default
-title: ホーム
+title: 日本国会議員アーカイブ
 ---
+<meta name="referrer" content="no-referrer">
 
-# 議会勢力ダッシュボード
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
-  <div class="card" style="text-align:center;">
-    <h3>全議員 合計</h3>
-    <canvas id="chartAll" style="max-height: 250px;"></canvas>
-  </div>
-  <div class="card" style="text-align:center;">
-    <h3>衆議院</h3>
-    <canvas id="chartSyu" style="max-height: 250px;"></canvas>
-  </div>
-  <div class="card" style="text-align:center;">
-    <h3>参議院</h3>
-    <canvas id="chartSan" style="max-height: 250px;"></canvas>
-  </div>
-</div>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ '/assets/js/dashboard.js' | relative_url }}"></script>
 
-<div style="text-align:center; margin-top: 3rem;">
-  <a href="list.html" class="btn-primary">👉 詳細な議員一覧（顔写真付）を表示</a>
+<div class="dashboard-container">
+    <div class="card">
+        <h2 class="section-title">議会勢力分析</h2>
+        <div class="chart-grid">
+            <div><strong style="display:block;text-align:center;">全議員合計</strong><canvas id="chartAll"></canvas></div>
+            <div><strong style="display:block;text-align:center;color:#e53e3e;">衆議院</strong><canvas id="chartSyu"></canvas></div>
+            <div><strong style="display:block;text-align:center;color:#3182ce;">参議院</strong><canvas id="chartSan"></canvas></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-title">議員データベース</h2>
+        <table id="politicianTable" class="display" style="width:100%">
+            <thead>
+                <tr><th>顔写真</th><th>院</th><th>氏名</th><th>政党</th><th>選挙区</th></tr>
+            </thead>
+            <tbody>
+                {% for p in site.data.politicians %}
+                <tr><td>{{ p.img_url }}</td><td>{{ p.chamber }}</td><td>{{ p.name }}</td><td>{{ p.party }}</td><td>{{ p.district }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% assign all = site.data.politicians %}
 {% assign syu = all | where: "chamber", "衆議院" %}
 {% assign san = all | where: "chamber", "参議院" %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const rulingParties = ['自民', '公明'];
-const partyColors = { 
-    '自民': '#1a365d', '公明': '#3182ce', '立憲': '#2b6cb0', 
-    '維新': '#38a169', '国民': '#d69e2e', '共産': '#e53e3e', '無': '#a0aec0' 
-};
-
-function renderPie(id, dataObj) {
-    const labels = Object.keys(dataObj);
-    const data = Object.values(dataObj);
-    if (data.length === 0) return;
-
-    new Chart(document.getElementById(id), {
-        type: 'doughnut',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: data,
-                backgroundColor: labels.map(l => partyColors[l] || '#cbd5e1'),
-                borderColor: labels.map(l => rulingParties.includes(l) ? '#ff0000' : '#ffffff'),
-                borderWidth: labels.map(l => rulingParties.includes(l) ? 5 : 1)
-            }]
-        },
-        options: { plugins: { legend: { position: 'bottom' } } }
-    });
-}
-
-{% assign g_all = all | group_by: "party" %}
-{% assign g_syu = syu | group_by: "party" %}
-{% assign g_san = san | group_by: "party" %}
-
-renderPie('chartAll', { {% for i in g_all %}'{{ i.name }}':{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} });
-renderPie('chartSyu', { {% for i in g_syu %}'{{ i.name }}':{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} });
-renderPie('chartSan', { {% for i in g_san %}'{{ i.name }}':{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} });
+// JekyllのデータをJSに渡して実行
+$(document).ready(function() {
+    setupDashboard(
+        { {% assign g = all | group_by: "party" %}{% for i in g %}'{{ i.name }}':{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} },
+        { {% assign g = syu | group_by: "party" %}{% for i in g %}'{{ i.name }}':{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} },
+        { {% assign g = san | group_by: "party" %}{% for i in g %}'{{ i.name }}':{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} }
+    );
+});
 </script>
