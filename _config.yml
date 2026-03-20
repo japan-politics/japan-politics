@@ -6,3 +6,11 @@ url: "https://japan-politics.github.io"
 
 kramdown:
   input: GFM
+
+# jekyll-default-layout がテーマのレイアウトを強制適用するのを防ぐ
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
