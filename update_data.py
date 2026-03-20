@@ -9,7 +9,42 @@ from bs4 import BeautifulSoup
 import os, time, re
 
 
+# ─── 共通ユーティリティ ───────────────────────────────────────
+
+def clean_name(s: str) -> str:
+    """氏名のスペース・全角スペース・「君」を除去"""
+    return re.sub(r'[君\s\u3000]+', '', s)
+
+def clean_yomi(s: str) -> str:
+    """ふりがなのスペース・全角スペースを除去"""
+    return re.sub(r'[\s\u3000]+', '', s)
+
+_REIWA_BASE  = 2018  # 令和N年 = 2018+N
+_HEISEI_BASE = 1988  # 平成N年 = 1988+N
+_SHOWA_BASE  = 1925  # 昭和N年 = 1925+N
+
+def wareki_to_yyyymmdd(s: str) -> str:
+    """和暦日付文字列を yyyymmdd に変換。変換不能な場合は元の文字列を返す"""
+    s = s.strip()
+    if not s:
+        return ''
+    for pattern, base in [
+        (r'令和\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日',  _REIWA_BASE),
+        (r'平成\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日',  _HEISEI_BASE),
+        (r'昭和\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日',  _SHOWA_BASE),
+    ]:
+        m = re.match(pattern, s)
+        if m:
+            y = base + int(m.group(1))
+            return f"{y}{int(m.group(2)):02d}{int(m.group(3)):02d}"
+    m = re.match(r'(\d{4})[/-](\d{1,2})[/-](\d{1,2})', s)
+    if m:
+        return f"{m.group(1)}{int(m.group(2)):02d}{int(m.group(3)):02d}"
+    return s
+
+
 # ─── 衆議院 ───────────────────────────────────────────────────
+
 def get_shugiin_data():
     all_members = []
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -19,7 +54,7 @@ def get_shugiin_data():
         print(f"衆議院 {i}ページ目取得中...")
         try:
             response = requests.get(url, headers=headers, timeout=15)
-            # ポイント: .content（生バイト）+ from_encoding='cp932'
+            # .content（生バイト）+ from_encoding='cp932' で文字化けを防ぐ
             soup = BeautifulSoup(response.content, 'html.parser', from_encoding='cp932')
 
             # テーブルは5列構造: 漢字名 | よみがな | 党派 | 選挙区 | 当選回数
@@ -29,36 +64,38 @@ def get_shugiin_data():
                 if len(tds) != 5:
                     continue
                 kanji = tds[0].get_text(strip=True)
-                # ヘッダー行（「氏名」など）をスキップ
+                # ヘッダー行をスキップ
                 if not kanji or kanji in ('氏名', '名前', '議員氏名'):
                     continue
                 if not re.search(r'[\u4e00-\u9fff\u3040-\u30ff]', kanji):
                     continue
-                name     = re.sub(r'[君\s\u3000]', '', kanji)
-                yomi     = re.sub(r'[\n\r\u3000\s]+', ' ',
-                               tds[1].get_text(separator='', strip=True)).strip()
-                party    = tds[2].get_text(strip=True)
-                district = tds[3].get_text(strip=True)
-                wins     = tds[4].get_text(strip=True)
+
                 all_members.append({
-                    'chamber': '衆議院', 'name': name, 'yomi': yomi,
-                    'party': party, 'district': district,
-                    'term': '', 'wins': wins, 'img_url': '',
+                    'chamber':  '衆議院',
+                    'name':     clean_name(kanji),
+                    'yomi':     clean_yomi(tds[1].get_text(separator='', strip=True)),
+                    'party':    tds[2].get_text(strip=True),
+                    'district': tds[3].get_text(strip=True),
+                    'term':     '',
+                    'wins':     tds[4].get_text(strip=True),
+                    'img_url':  '',
                 })
                 found += 1
+
             print(f"  → {found}名取得")
             time.sleep(1)
+
         except Exception as e:
             print(f"  → エラー: {e}")
+
     return all_members
 
 
 # ─── 参議院（ライブ取得） ─────────────────────────────────────
+
 def get_sangiin_data_live():
-    all_members = []
     headers = {'User-Agent': 'Mozilla/5.0'}
 
-    # 最新会期から降順に試みる
     for session in range(221, 204, -1):
         url = f"https://www.sangiin.go.jp/japanese/joho1/kousei/giin/{session}/giin.htm"
         print(f"参議院 会期{session} 試行中...")
@@ -74,20 +111,18 @@ def get_sangiin_data_live():
             time.sleep(1)
         except Exception as e:
             print(f"  → エラー: {e}")
-    return all_members
+
+    return []
 
 
 # ─── 参議院（保存済みHTMLから取得） ──────────────────────────
+
 def get_sangiin_data_from_file(filepath: str):
-    """
-    ブラウザで保存した参議院議員一覧HTMLからデータを取得する。
-    文字コードがUTF-8で正常に保存されている前提。
-    """
+    """ブラウザで保存した参議院議員一覧HTMLからデータを取得する"""
     print(f"参議院データをファイルから取得: {filepath}")
     with open(filepath, 'rb') as f:
         raw = f.read()
-    text = raw.decode('utf-8', errors='replace')
-    members = _parse_sangiin_html(text)
+    members = _parse_sangiin_html(raw.decode('utf-8', errors='replace'))
     print(f"  → {len(members)}名取得")
     return members
 
@@ -96,6 +131,7 @@ def _parse_sangiin_html(html_text: str):
     """参議院議員一覧HTMLの共通パーサー"""
     soup = BeautifulSoup(html_text, 'html.parser')
     members = []
+
     for row in soup.find_all('tr'):
         tds = row.find_all('td')
         # 6列構造: 氏名 | 読み方 | 会派 | 選挙区 | 任期満了 | （空）
@@ -105,29 +141,29 @@ def _parse_sangiin_html(html_text: str):
         if not a_tags:
             continue
 
-        # 余分な全角スペースを整理
-        name  = re.sub(r'\u3000+', '\u3000', tds[0].get_text(strip=True)).strip('\u3000')
-        yomi  = tds[1].get_text(strip=True).replace('\u3000', ' ')
-        party = tds[2].get_text(strip=True)
-        dist  = tds[3].get_text(strip=True)
-        term  = tds[4].get_text(strip=True)
+        href = a_tags[0].get('href', '')
+        m    = re.search(r'profile/(\d+)\.htm', href)
+        pid  = m.group(1) if m else ''
 
-        href  = a_tags[0].get('href', '')
-        m = re.search(r'profile/(\d+)\.htm', href)
-        pid = m.group(1) if m else ''
-        img_url = (
-            f"https://www.sangiin.go.jp/japanese/joho1/kousei/giin/photo/g{pid}.jpg"
-            if pid else ''
-        )
         members.append({
-            'chamber': '参議院', 'name': name, 'yomi': yomi,
-            'party': party, 'district': dist,
-            'term': term, 'wins': '', 'img_url': img_url,
+            'chamber':  '参議院',
+            'name':     clean_name(tds[0].get_text(strip=True)),
+            'yomi':     clean_yomi(tds[1].get_text(strip=True)),
+            'party':    tds[2].get_text(strip=True),
+            'district': tds[3].get_text(strip=True),
+            'term':     wareki_to_yyyymmdd(tds[4].get_text(strip=True)),
+            'wins':     '',
+            'img_url':  (
+                f"https://www.sangiin.go.jp/japanese/joho1/kousei/giin/photo/g{pid}.jpg"
+                if pid else ''
+            ),
         })
+
     return members
 
 
 # ─── メイン ──────────────────────────────────────────────────
+
 def main():
     os.makedirs('_data', exist_ok=True)
 
@@ -136,7 +172,6 @@ def main():
     print(f"衆議院合計: {len(shugiin)}名\n")
 
     print("=== 参議院データ取得 ===")
-    # 保存済みHTMLがある場合はこちらを使う（確実）
     sangiin_html = "議員一覧_50音順__参議院.html"
     if os.path.exists(sangiin_html):
         sangiin = get_sangiin_data_from_file(sangiin_html)
