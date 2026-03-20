@@ -1,6 +1,6 @@
 ---
 layout: default
-title: ダッシュボード
+title: 政治家アーカイブ
 ---
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
