@@ -2,14 +2,6 @@
 layout: default
 title: 議員一覧
 ---
-<meta name="referrer" content="no-referrer">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="{{ '/assets/js/dashboard.js' | relative_url }}"></script>
 
 {% include header.html %}
 
@@ -44,6 +36,10 @@ title: 議員一覧
     </table>
   </div>
 </div>
+
+<footer>
+  日本の政治 ― 公式議会記録に基づくデータ
+</footer>
 
 <script>
 $(document).ready(function() {

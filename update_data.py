@@ -29,10 +29,14 @@ def get_shugiin_data():
                 if len(tds) != 5:
                     continue
                 kanji = tds[0].get_text(strip=True)
-                if not kanji or not re.search(r'[\u4e00-\u9fff\u3040-\u30ff]', kanji):
+                # ヘッダー行（「氏名」など）をスキップ
+                if not kanji or kanji in ('氏名', '名前', '議員氏名'):
+                    continue
+                if not re.search(r'[\u4e00-\u9fff\u3040-\u30ff]', kanji):
                     continue
                 name     = re.sub(r'[君\s\u3000]', '', kanji)
-                yomi     = tds[1].get_text(separator='', strip=True)
+                yomi     = re.sub(r'[\n\r\u3000\s]+', ' ',
+                               tds[1].get_text(separator='', strip=True)).strip()
                 party    = tds[2].get_text(strip=True)
                 district = tds[3].get_text(strip=True)
                 wins     = tds[4].get_text(strip=True)
