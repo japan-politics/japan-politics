@@ -1,85 +1,328 @@
-/* Whitehouse.gov Inspired Design System */
+/* ============================================================
+   日本の政治 — 和の公式デザインシステム
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap');
+
 :root {
-    --wh-navy: #002654; /* 象徴的な深いネイビー */
-    --wh-blue: #0056b3;
-    --wh-accent: #e41c39; /* 活気あるレッド */
-    --wh-bg: #ffffff;
-    --wh-text: #212121;
-    --wh-gray: #f0f0f0;
+  --urushi:      #1a1008;
+  --sumi:        #2d2416;
+  --washi:       #f8f4ee;
+  --washi2:      #f0ebe2;
+  --shu:         #9e2a1c;
+  --kin:         #b5843a;
+  --moegi:       #3d6b4f;
+  --ink:         #2d2416;
+  --ink-mid:     #4a3f30;
+  --ink-light:   #7a6e5f;
+  --rule:        #d8d0c4;
+  --serif: 'Noto Serif JP', Georgia, serif;
+  --sans:  'Noto Sans JP', system-ui, sans-serif;
 }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 body {
-    font-family: "Mercury Display", "Shippori Mincho", Georgia, serif; /* セリフ体主体 */
-    background-color: var(--wh-bg);
-    color: var(--wh-text);
-    margin: 0;
-    line-height: 1.6;
+  font-family: var(--serif);
+  background: var(--washi);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
 }
 
-header {
-    background-color: var(--wh-navy);
-    color: white;
-    padding: 2rem 0;
-    text-align: center;
-    border-bottom: 5px solid var(--wh-blue);
+/* ── グローバルナビバー（サイトタイトル + ナビゲーション） ── */
+.global-nav {
+  position: relative;
+  background: var(--urushi);
+  border-bottom: 1px solid rgba(181,132,58,.22);
+  overflow: hidden;
 }
 
-header h1 {
-    font-size: 2.2rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin: 0;
+.global-nav::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%, var(--kin) 25%,
+    var(--shu) 50%, var(--kin) 75%, transparent 100%
+  );
 }
 
+.global-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  height: 52px;
+}
+
+.site-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--washi);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin-left: auto;
+  gap: 0;
+}
+
+.nav-links a {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: rgba(248,244,238,.58);
+  text-decoration: none;
+  padding: 0 1rem;
+  height: 52px;
+  line-height: 52px;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--washi);
+  border-bottom-color: var(--shu);
+}
+
+/* ── レイアウト ── */
 .dashboard-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
 }
 
-/* カードではなく「セクション」で区切るのがWhitehouse流 */
+/* ── セクション ── */
 .section-block {
-    margin-bottom: 5rem;
-    border-top: 1px solid #ccc;
-    padding-top: 2rem;
+  margin-bottom: 4.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--rule);
+  animation: fadeUp .55s ease both;
+}
+
+.section-block:nth-child(1) { animation-delay: .05s; }
+.section-block:nth-child(2) { animation-delay: .2s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .section-title {
-    font-size: 1.8rem;
-    color: var(--wh-navy);
-    margin-bottom: 2rem;
-    text-align: center;
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 500;
+  color: var(--urushi);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
 }
 
-/* ドーナツグラフの鮮明化 */
+.section-subtitle {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--ink-light);
+}
+
+.section-mark {
+  width: 24px; height: 1px;
+  background: var(--shu);
+  margin: .7rem auto 0;
+}
+
+/* ── グラフグリッド ── */
 .chart-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2.5rem;
+  align-items: start;
 }
 
-/* 名簿テーブル：装飾を排し、可読性を最大化 */
-#politicianTable { width: 100% !important; border-top: 2px solid var(--wh-navy); }
+.chart-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .7rem;
+}
+
+.chart-label {
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  padding: .22rem .85rem;
+  border: 1px solid;
+}
+
+.chart-label-all  { color: var(--urushi); border-color: var(--urushi); }
+.chart-label-syu  { color: var(--shu);    border-color: var(--shu);    }
+.chart-label-san  { color: var(--moegi);  border-color: var(--moegi);  }
+
+.chart-cell canvas { max-width: 220px; width: 100%; }
+
+/* ── DataTable ── */
+.dataTables_wrapper {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  border: 1px solid var(--rule);
+  padding: .32rem .6rem;
+  border-radius: 0;
+  background: var(--washi);
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus,
+.dataTables_wrapper .dataTables_length select:focus {
+  border-color: var(--shu);
+}
+
+#politicianTable {
+  width: 100% !important;
+  border-collapse: collapse;
+  border-top: 2px solid var(--urushi);
+}
+
 #politicianTable thead th {
-    background: transparent !important;
-    color: var(--wh-navy) !important;
-    font-weight: bold;
-    border-bottom: 2px solid var(--wh-navy) !important;
+  font-family: var(--sans) !important;
+  font-size: 0.62rem !important;
+  font-weight: 500 !important;
+  letter-spacing: .14em !important;
+  color: var(--urushi) !important;
+  background: transparent !important;
+  border-bottom: 1px solid var(--urushi) !important;
+  padding: .8rem .75rem !important;
+  white-space: nowrap;
 }
 
+#politicianTable tbody tr {
+  border-bottom: 1px solid var(--rule);
+  transition: background .15s;
+}
+
+#politicianTable tbody tr:hover { background: var(--washi2); }
+
+#politicianTable tbody td {
+  font-family: var(--sans) !important;
+  font-size: 0.85rem !important;
+  padding: .6rem .75rem !important;
+  vertical-align: middle;
+  color: var(--ink-mid);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  border-radius: 0 !important;
+  border: 1px solid var(--rule) !important;
+  margin: 0 1px !important;
+  padding: .22rem .62rem !important;
+  color: var(--ink-mid) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: var(--washi2) !important;
+  border-color: var(--shu) !important;
+  color: var(--shu) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+  background: var(--urushi) !important;
+  border-color: var(--urushi) !important;
+  color: var(--washi) !important;
+  font-weight: 500 !important;
+}
+
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_length {
+  color: var(--ink-light);
+  font-size: 0.78rem;
+}
+
+/* ── 議員写真 ── */
 .giin-photo {
-    width: 65px;
-    height: 80px;
-    object-fit: cover;
-    border: 1px solid #ddd;
-    filter: grayscale(10%); /* 落ち着いたトーン */
+  width: 48px; height: 62px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid var(--rule);
+  filter: sepia(8%) contrast(1.02);
+  transition: filter .2s, transform .2s;
 }
 
-.badge {
-    padding: 4px 12px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
+.giin-photo:hover {
+  filter: sepia(0%) contrast(1.05);
+  transform: scale(1.04);
 }
-.badge-shugiin { background: var(--wh-accent); color: white; }
-.badge-sangiin { background: var(--wh-blue); color: white; }
+
+/* ── バッジ ── */
+.badge {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  padding: .18rem .65rem;
+  border: 1px solid;
+}
+
+.badge-shugiin { color: var(--shu);   border-color: var(--shu);   }
+.badge-sangiin { color: var(--moegi); border-color: var(--moegi); }
+
+/* ── フッター ── */
+footer {
+  background: var(--urushi);
+  border-top: 1px solid rgba(181,132,58,.2);
+  color: rgba(248,244,238,.38);
+  text-align: center;
+  padding: 1.5rem;
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  letter-spacing: .1em;
+}
+
+footer::before {
+  content: '';
+  display: block;
+  width: 32px; height: 1px;
+  background: var(--kin);
+  margin: 0 auto .8rem;
+  opacity: .45;
+}
+
+/* ── レスポンシブ ── */
+@media (max-width: 768px) {
+  .chart-grid { grid-template-columns: 1fr; }
+  .nav-links { flex-wrap: wrap; }
+  .nav-links a { font-size: .68rem; padding: 0 .65rem; height: 44px; line-height: 44px; }
+  .header-en { display: none; }
+  .header-sep { display: none; }
+}
