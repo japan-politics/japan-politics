@@ -790,3 +790,22 @@ footer::before {
 @media (max-width: 768px) {
   .back-to-top { bottom: 1rem; right: 1rem; }
 }
+
+/* ── 円グラフ外部tooltip ── */
+.chart-tooltip-ext {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(26,16,8,0.90);
+  color: #f8f4ee;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  padding: .4rem .75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  border: 1px solid rgba(181,132,58,0.35);
+  z-index: 10;
+}

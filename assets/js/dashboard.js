@@ -1,3 +1,30 @@
+function externalTooltip(context) {
+  const { chart, tooltip } = context;
+  const cell = chart.canvas.closest('.chart-cell');
+  if (!cell) return;
+
+  let tip = cell.querySelector('.chart-tooltip-ext');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.className = 'chart-tooltip-ext';
+    cell.style.position = 'relative';
+    cell.appendChild(tip);
+  }
+
+  if (tooltip.opacity === 0) {
+    tip.style.opacity = '0';
+    return;
+  }
+
+  const dataIndex = tooltip.dataPoints[0].dataIndex;
+  const label     = tooltip.dataPoints[0].label;
+  const value     = tooltip.dataPoints[0].parsed;
+  const color     = chart.data.datasets[0].backgroundColor[dataIndex];
+
+  tip.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:1px;background:${color};margin-right:5px;vertical-align:middle;"></span>${label}：${value} 議席`;
+  tip.style.opacity = '1';
+}
+
 const rulingParties = ['自由民主党', '日本維新の会'];
 
 const partyColors = {
@@ -95,33 +122,29 @@ function renderChart(id, obj, houseKey) {
       datasets: [{
         data: values,
         backgroundColor: [...bg],
-        borderColor:  labels.map(l => rulingParties.includes(l) ? '#f0a830' : 'rgba(248,244,238,0.8)'),
-        borderWidth:  labels.map(l => rulingParties.includes(l) ? 8 : 1),
-        offset:       labels.map(l => rulingParties.includes(l) ? 6 : 0),
-        hoverOffset:  8,
-        hoverBorderWidth: labels.map(l => rulingParties.includes(l) ? 10 : 3),
+        borderColor:  labels.map(l => rulingParties.includes(l) ? '#f0a830' : 'rgba(248,244,238,0.6)'),
+        borderWidth:  labels.map(l => rulingParties.includes(l) ? 7 : 1),
+        hoverOffset:  4,
+        hoverBorderWidth: labels.map(l => rulingParties.includes(l) ? 9 : 2),
         hoverBorderColor: labels.map(l => rulingParties.includes(l) ? '#f0a830' : '#d8d0c4'),
       }]
     },
     options: {
       cutout: '60%',
       plugins: {
-        legend:  { display: false },
-        tooltip: { enabled: true }
+        legend: { display: false },
+        tooltip: {
+          enabled: false,
+          external: externalTooltip,
+        }
       },
       onClick(e, elements) {
-        const pts = (elements && elements.length > 0)
-          ? elements
-          : this.getElementsAtEventForMode(e, 'nearest', { intersect: false }, false);
-        if (pts && pts.length > 0) {
-          toggleSlice(this, pts[0].index, houseKey);
+        if (elements && elements.length > 0) {
+          toggleSlice(this, elements[0].index, houseKey);
         }
       },
       onHover(e, elements) {
-        const pts = (elements && elements.length > 0)
-          ? elements
-          : this.getElementsAtEventForMode(e, 'nearest', { intersect: false }, false);
-        e.native.target.style.cursor = (pts && pts.length > 0) ? 'pointer' : 'default';
+        e.native.target.style.cursor = (elements && elements.length > 0) ? 'pointer' : 'default';
       },
     }
   });
