@@ -1,18 +1,14 @@
-﻿・ｿ---
+---
 layout: default
-title: 隴鯉ｽ･隴幢ｽｬ邵ｺ・ｮ隰ｾ・ｿ雎撰ｽｻ
+title: 日本の政治
 ---
 
 {% assign all = site.data.politicians %}
-{% assign syu = all | where: "chamber", "髯ｦ繝ｻ・ｭ・ｰ鬮ｯ・｢" %}
-{% assign san = all | where: "chamber", "陷ｿ繧奇ｽｭ・ｰ鬮ｯ・｢" %}
-
-<div id="chart-data"
-  data-all='{% assign g = all | group_by: "party" %}{ {% for i in g %}"{{ i.name | replace: '"', '\"' }}":{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} }'
-  data-syu='{% assign g = syu | group_by: "party" %}{ {% for i in g %}"{{ i.name | replace: '"', '\"' }}":{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} }'
-  data-san='{% assign g = san | group_by: "party" %}{ {% for i in g %}"{{ i.name | replace: '"', '\"' }}":{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} }'
-  style="display:none">
-</div>
+{% assign syu = all | where: "chamber", "衆議院" %}
+{% assign san = all | where: "chamber", "参議院" %}
+{% assign g_all = all | group_by: "party" %}
+{% assign g_syu = syu | group_by: "party" %}
+{% assign g_san = san | group_by: "party" %}
 
 {% include header.html %}
 
@@ -20,42 +16,38 @@ title: 隴鯉ｽ･隴幢ｽｬ邵ｺ・ｮ隰ｾ・ｿ雎撰ｽｻ
 
   <div class="section-block">
     <div class="section-header">
-      <h2 class="section-title">霑ｴ・ｾ陜ｨ・ｨ邵ｺ・ｮ髫ｴ・ｰ陝ｶ・ｭ鬩滓ｦ翫・</h2>
-      <p class="section-subtitle">郢ｧ・ｰ郢晢ｽｩ郢晁ｼ費ｽ堤ｹｧ・ｯ郢晢ｽｪ郢昴・縺醍ｸｺ蜉ｱ窶ｻ隰ｾ・ｿ陷亥｣ｹ・帝ｩ包ｽｸ隰壹・/p>
+      <h2 class="section-title">現在の議席配分</h2>
+      <p class="section-subtitle">グラフをクリックして政党を選択</p>
       <div class="section-mark"></div>
     </div>
     <div class="chart-grid">
       <div class="chart-cell">
-        <span class="chart-label chart-label-all">陜暦ｽｽ邵ｲﾂ闔ｨ繝ｻ/span>
+        <span class="chart-label chart-label-all">国　会</span>
         <canvas id="chartAll"></canvas>
       </div>
       <div class="chart-cell">
-        <span class="chart-label chart-label-syu">髯ｦ繝ｻ・ｭ・ｰ鬮ｯ・｢</span>
+        <span class="chart-label chart-label-syu">衆議院</span>
         <canvas id="chartSyu"></canvas>
       </div>
       <div class="chart-cell">
-        <span class="chart-label chart-label-san">陷ｿ繧奇ｽｭ・ｰ鬮ｯ・｢</span>
+        <span class="chart-label chart-label-san">参議院</span>
         <canvas id="chartSan"></canvas>
       </div>
     </div>
     <div style="text-align:center;margin-top:1.75rem;">
-      <button id="resetBtn" onclick="resetAll()" class="reset-btn">鬩包ｽｸ隰壽ｧｭ・堤ｹ晢ｽｪ郢ｧ・ｻ郢昴・繝ｨ</button>
+      <button onclick="resetAll()" class="reset-btn">選択をリセット</button>
     </div>
   </div>
 
   <div class="section-block">
     <div class="section-header">
-      <h2 class="section-title">陜暦ｽｽ闔ｨ螟奇ｽｭ・ｰ陷ｩ・｡闕ｳﾂ髫包ｽｧ</h2>
+      <h2 class="section-title">国会議員一覧</h2>
       <div class="section-mark"></div>
     </div>
     <table id="politicianTable" class="display">
       <thead>
         <tr>
-          <th>陷蜥乗ｄ</th>
-          <th>鬮ｯ・｢陷ｷ繝ｻ/th>
-          <th>雎御ｸ樣倹郢晢ｽｻ邵ｺ・ｵ郢ｧ鄙ｫ窶ｲ邵ｺ・ｪ</th>
-          <th>闔ｨ螢ｽ・ｴ・ｾ</th>
-          <th>鬩包ｽｸ隰門雀邇・/th>
+          <th>写真</th><th>院名</th><th>氏名・ふりがな</th><th>会派</th><th>選挙区</th>
         </tr>
       </thead>
       <tbody>
@@ -77,11 +69,24 @@ title: 隴鯉ｽ･隴幢ｽｬ邵ｺ・ｮ隰ｾ・ｿ雎撰ｽｻ
 {% include footer.html %}
 
 <script>
-$(document).ready(function() {
-  var el = document.getElementById('chart-data');
-  var dataAll = JSON.parse(el.dataset.all);
-  var dataSyu = JSON.parse(el.dataset.syu);
-  var dataSan = JSON.parse(el.dataset.san);
-  setupDashboard(dataAll, dataSyu, dataSan);
-});
+(function() {
+  var all = {
+    {% for i in g_all %}
+    {{ i.name | jsonify }}: {{ i.size }}{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+  var syu = {
+    {% for i in g_syu %}
+    {{ i.name | jsonify }}: {{ i.size }}{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+  var san = {
+    {% for i in g_san %}
+    {{ i.name | jsonify }}: {{ i.size }}{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+  $(document).ready(function() {
+    setupDashboard(all, syu, san);
+  });
+})();
 </script>
