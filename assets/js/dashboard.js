@@ -25,8 +25,14 @@ const chartInstances = {};
 
 function sortPartyData(obj) {
   const entries = Object.entries(obj);
-  const ruling    = entries.filter(([l]) =>  rulingParties.includes(l)).sort((a,b) => b[1]-a[1]);
-  const nonRuling = entries.filter(([l]) => !rulingParties.includes(l)).sort((a,b) => b[1]-a[1]);
+  // 与党: 自民→維新の固定順
+  const rulingOrder = ['自由民主党', '日本維新の会'];
+  const ruling = rulingOrder
+    .filter(p => obj[p] !== undefined)
+    .map(p => [p, obj[p]]);
+  const nonRuling = entries
+    .filter(([l]) => !rulingParties.includes(l))
+    .sort((a, b) => b[1] - a[1]);
   return [...ruling, ...nonRuling];
 }
 
@@ -85,8 +91,8 @@ function renderChart(id, obj, houseKey) {
       datasets: [{
         data: values,
         backgroundColor: [...bg],
-        borderColor: labels.map(l => rulingParties.includes(l) ? '#9a6e28' : '#f8f4ee'),
-        borderWidth: labels.map(l => rulingParties.includes(l) ? 4 : 1),
+        borderColor: labels.map(l => rulingParties.includes(l) ? '#b5843a' : 'rgba(248,244,238,0.6)'),
+        borderWidth: labels.map(l => rulingParties.includes(l) ? 5 : 1),
       }]
     },
     options: {
@@ -111,16 +117,20 @@ function renderChart(id, obj, houseKey) {
 }
 
 function buildLegend(chart, canvasId, houseKey, labels, values, bg) {
-  // canvas の親の .chart-cell に凡例を追加
   const cell = document.getElementById(canvasId).closest('.chart-cell');
   if (!cell) return;
 
-  // 既存の凡例を削除
-  const existing = cell.querySelector('.chart-legend');
-  if (existing) existing.remove();
+  // 既存のラッパーを削除
+  const existingWrap = cell.querySelector('.chart-legend-wrap');
+  if (existingWrap) existingWrap.remove();
+
+  // canvasと同幅のラッパーで凡例を中央に固定
+  const wrap = document.createElement('div');
+  wrap.className = 'chart-legend-wrap';
 
   const legend = document.createElement('div');
   legend.className = 'chart-legend';
+  wrap.appendChild(legend);
 
   labels.forEach((label, i) => {
     const item = document.createElement('div');
@@ -146,7 +156,7 @@ function buildLegend(chart, canvasId, houseKey, labels, values, bg) {
     legend.appendChild(item);
   });
 
-  cell.appendChild(legend);
+  cell.appendChild(wrap);
 }
 
 function toggleSlice(chart, idx, houseKey) {

@@ -172,31 +172,47 @@ body {
 .chart-cell {
   display: flex;
   flex-direction: column;
-  align-items: stretch;   /* 凡例をcell幅いっぱいに */
+  align-items: center;  /* 全要素を中央揃え */
   gap: 1rem;
   min-width: 0;
 }
 
 .chart-cell canvas {
   display: block;
-  margin: 0 auto;         /* canvasは中央 */
 }
 
 .chart-label {
   font-family: var(--sans);
-  font-size: 0.72rem;          /* 0.6→0.72 */
+  font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: .14em;
-  padding: .3rem 1rem;         /* タップ領域拡大 */
-  border: 1.5px solid;        /* 1→1.5px */
+  padding: .4rem 0;
+  border: 1.5px solid;
+  text-align: center;
+  width: 100%;
+  display: block;
 }
 
-.chart-label-all  { color: var(--urushi); border-color: var(--urushi); }
-.chart-label-syu  { color: var(--shu);    border-color: var(--shu);    }
+.chart-label-all {
+  color: var(--washi);
+  background: var(--urushi);
+  border-color: var(--urushi);
+}
+
+.chart-label-syu {
+  color: var(--washi);
+  background: var(--shu);
+  border-color: var(--shu);
+}
 
 /* 与党ハイライト凡例 */
 .ruling-party-label { font-weight: 700; }
-.chart-label-san  { color: var(--moegi);  border-color: var(--moegi);  }
+
+.chart-label-san {
+  color: var(--washi);
+  background: var(--moegi);
+  border-color: var(--moegi);
+}
 
 .chart-cell > canvas {
   width: 260px !important;
@@ -204,15 +220,20 @@ body {
   flex-shrink: 0;
 }
 
+/* 凡例をcanvasと同じ幅に揃える */
+.chart-legend-wrap {
+  width: 260px;
+}
+
 /* 凡例を2列・左寄せ */
 .chart-legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px 16px;
+  gap: 5px 12px;
   font-family: var(--sans);
   font-size: 0.68rem;
   color: var(--ink-mid);
-  padding: 0 4px;
+  width: 100%;
 }
 
 .chart-legend-item {
@@ -333,13 +354,24 @@ body {
   background: rgba(140,31,16,.06) !important;
 }
 
+#politicianTable thead th {
+  text-align: center !important;
+}
+
 #politicianTable tbody td {
   font-family: var(--sans) !important;
-  font-size: 0.9rem !important;  /* 0.85→0.9 */
-  padding: .85rem .85rem !important; /* 行高さ拡大 */
+  font-size: 0.9rem !important;
+  padding: .85rem .85rem !important;
   vertical-align: middle;
+  text-align: center !important;
   color: var(--ink-mid);
   line-height: 1.5;
+}
+
+/* 氏名・ふりがな列のみ左寄せ */
+#politicianTable thead th:nth-child(3),
+#politicianTable tbody td:nth-child(3) {
+  text-align: left !important;
 }
 
 /* ふりがな */
