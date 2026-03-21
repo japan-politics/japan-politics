@@ -3,16 +3,11 @@ const rulingParties = ['自由民主党', '日本維新の会'];
 const partyColors = {
   '自由民主党':       '#3a5f8a',
   '日本維新の会':     '#4a7c5f',
-  '立憲民主党':       '#7a5c3a',
-  '立憲民主・無所属': '#8a7050',
-  '公明党':           '#8a6a2a',
   '国民民主党':       '#5a5a7a',
   '日本共産党':       '#7a3a4a',
   '参政党':           '#4a6a4a',
   '社会民主党':       '#2a6b6b',
   'れいわ新選組':     '#6a3a7a',
-  '有志の会':         '#5a6a3a',
-  'みらいの風':       '#3a6a7a',
   '日本保守党':       '#7a5a3a',
   '沖縄の風':         '#3a7a6a',
   '中道改革連合':     '#5a6a7a',
@@ -109,8 +104,9 @@ function renderChart(id, obj, houseKey) {
               return data.labels.map((label, i) => ({
                 text: `${label}  ${data.datasets[0].data[i]}`,
                 fillStyle: data.datasets[0].backgroundColor[i],
-                strokeStyle: data.datasets[0].borderColor[i],
-                lineWidth: data.datasets[0].borderWidth[i],
+                strokeStyle: rulingParties.includes(label) ? '#9a6e28' : data.datasets[0].backgroundColor[i],
+                lineWidth: rulingParties.includes(label) ? 2 : 0,
+                fontColor: '#3a2e22',
                 index: i,
                 hidden: false,
               }));

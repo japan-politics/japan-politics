@@ -44,6 +44,9 @@ title: 日本の政治
       <h2 class="section-title">国会議員一覧</h2>
       <div class="section-mark"></div>
     </div>
+    <div class="table-controls">
+      <button onclick="resetAll()" class="reset-btn">選択をリセット</button>
+    </div>
     <table id="politicianTable" class="display">
       <thead>
         <tr>

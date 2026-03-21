@@ -186,11 +186,14 @@ body {
 
 .chart-label-all  { color: var(--urushi); border-color: var(--urushi); }
 .chart-label-syu  { color: var(--shu);    border-color: var(--shu);    }
+
+/* 与党ハイライト凡例 */
+.ruling-party-label { font-weight: 700; }
 .chart-label-san  { color: var(--moegi);  border-color: var(--moegi);  }
 
 .chart-cell canvas {
-  max-width: 200px;
-  width: 100%;
+  width: 200px !important;
+  height: 200px !important;
 }
 
 /* ── リセットボタン ── */
@@ -319,9 +322,9 @@ body {
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-  background: var(--urushi) !important;
-  border-color: var(--urushi) !important;
-  color: var(--washi) !important;
+  background: var(--shu) !important;
+  border-color: var(--shu) !important;
+  color: #fff !important;
   font-weight: 600 !important;
 }
 
