@@ -74,9 +74,7 @@ title: 日本の政治
 
 </div>
 
-<footer>
-  日本の政治 ― 公式議会記録に基づくデータ
-</footer>
+{% include footer.html %}
 
 <script>
 $(document).ready(function() {

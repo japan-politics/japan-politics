@@ -444,3 +444,183 @@ footer::before {
   font-family: var(--sans);
   border: 1px solid var(--rule);
 }
+
+/* ── フッター ── */
+.site-footer {
+  background: var(--urushi);
+  border-top: 1px solid rgba(181,132,58,.2);
+  padding: 1.75rem 1.5rem;
+  font-family: var(--sans);
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .55rem;
+}
+
+.footer-sources {
+  font-size: 0.72rem;
+  color: rgba(248,244,238,.45);
+  letter-spacing: .04em;
+}
+
+.footer-sources a {
+  color: rgba(248,244,238,.6);
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.footer-sources a:hover { color: var(--washi); }
+
+.footer-copy {
+  font-size: 0.65rem;
+  color: rgba(248,244,238,.28);
+  letter-spacing: .06em;
+}
+
+/* ── このサイトについて ── */
+.about-content {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.about-section {
+  margin-bottom: 2.5rem;
+}
+
+.about-heading {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--urushi);
+  letter-spacing: .06em;
+  margin-bottom: .85rem;
+  padding-left: .75rem;
+  border-left: 3px solid var(--shu);
+}
+
+.about-content p {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  line-height: 1.9;
+  margin-bottom: .75rem;
+}
+
+.about-list {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  line-height: 2;
+  padding-left: 1.5rem;
+  margin-bottom: .75rem;
+}
+
+.about-list a {
+  color: var(--shu);
+  text-decoration: none;
+}
+
+.about-list a:hover { text-decoration: underline; }
+
+/* ── お問い合わせフォーム ── */
+.contact-content {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.contact-lead {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+.contact-form { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.form-group { display: flex; flex-direction: column; gap: .5rem; }
+
+.form-label {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: .06em;
+}
+
+.form-input {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--washi);
+  border: 1.5px solid var(--rule);
+  padding: .65rem .85rem;
+  border-radius: 0;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+  min-height: 44px;
+  appearance: none;
+}
+
+.form-input:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(26,92,168,.12);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 160px;
+  line-height: 1.7;
+}
+
+.form-submit { margin-top: .5rem; }
+
+.submit-btn {
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  color: var(--washi);
+  background: var(--urushi);
+  border: none;
+  padding: .85rem 2.5rem;
+  cursor: pointer;
+  transition: background .2s, opacity .2s;
+  min-height: 48px;
+}
+
+.submit-btn:hover { background: var(--sumi); }
+.submit-btn:active { opacity: .85; }
+
+/* ── 送信完了ページ ── */
+.thanks-icon {
+  font-size: 2.5rem;
+  color: var(--moegi);
+  font-family: var(--sans);
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 2rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  color: var(--shu);
+  text-decoration: none;
+  border-bottom: 1px solid var(--shu);
+  padding-bottom: 2px;
+  letter-spacing: .06em;
+  transition: opacity .2s;
+}
+
+.back-link:hover { opacity: .7; }
+
+/* ── レスポンシブ ── */
+@media (max-width: 768px) {
+}
