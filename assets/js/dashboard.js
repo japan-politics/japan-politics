@@ -48,8 +48,8 @@ const centerTextPlugin = {
     let selSeats   = 0;
     selected.forEach(i => { selSeats += values[i] || 0; });
 
-    const fs  = Math.max(16, Math.round(r * 0.40));
-    const sub = Math.max(11, Math.round(r * 0.15));
+    const fs  = Math.max(13, Math.round(r * 0.26));
+    const sub = Math.max(10, Math.round(r * 0.12));
 
     ctx.save();
     ctx.textAlign    = 'center';
@@ -109,11 +109,8 @@ function renderChart(id, obj, houseKey) {
         tooltip: { enabled: true }
       },
       onClick(e, elements) {
-        const pts = (elements && elements.length > 0)
-          ? elements
-          : this.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
-        if (pts && pts.length > 0) {
-          toggleSlice(this, pts[0].index, houseKey);
+        if (elements && elements.length > 0) {
+          toggleSlice(this, elements[0].index, houseKey);
         }
       },
       onHover(e, elements) {
@@ -165,11 +162,7 @@ function buildLegend(chart, canvasId, houseKey, labels, values, bg) {
 
     const name = document.createElement('span');
     name.className   = 'chart-legend-name';
-    name.textContent = ruling ? `★ ${label}` : label;
-    if (ruling) {
-      name.style.fontWeight = '700';
-      name.style.color      = '#1a1410';
-    }
+    name.textContent = label;
 
     const count = document.createElement('span');
     count.className   = 'chart-legend-count';

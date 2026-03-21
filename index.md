@@ -44,21 +44,17 @@ title: 日本の政治
       <h2 class="section-title">国会議員一覧</h2>
       <div class="section-mark"></div>
     </div>
-    <div class="table-controls">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:.75rem;">
       <button onclick="resetAll()" class="reset-btn">選択をリセット</button>
-      <div class="table-controls-right">
-        <div class="table-length-wrap">
-          <select id="tableLengthSelect" class="form-input" style="width:auto;min-height:36px;padding:.3rem .6rem;font-size:.82rem;" onchange="$('#politicianTable').DataTable().page.len(this.value).draw()">
-            <option value="25">25件表示</option>
-            <option value="50">50件表示</option>
-            <option value="100" selected>100件表示</option>
-            <option value="-1">全件表示</option>
-          </select>
-        </div>
-        <div class="table-search-wrap">
-          <input type="search" id="tableSearch" class="form-input" style="width:200px;min-height:36px;padding:.3rem .7rem;font-size:.82rem;" placeholder="氏名・政党で検索"
-            oninput="$('#politicianTable').DataTable().search(this.value).draw()">
-        </div>
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <select style="font-family:var(--sans);font-size:.82rem;height:36px;padding:.3rem .6rem;border:1.5px solid var(--rule);background:var(--washi);color:var(--ink);appearance:none;cursor:pointer;" onchange="$('#politicianTable').DataTable().page.len(this.value).draw()">
+          <option value="25">25件表示</option>
+          <option value="50">50件表示</option>
+          <option value="100" selected>100件表示</option>
+          <option value="-1">全件表示</option>
+        </select>
+        <input type="search" style="font-family:var(--sans);font-size:.82rem;height:36px;width:200px;padding:.3rem .7rem;border:1.5px solid var(--rule);background:var(--washi);color:var(--ink);" placeholder="氏名・政党で検索"
+          oninput="$('#politicianTable').DataTable().search(this.value).draw()">
       </div>
     </div>
     <table id="politicianTable" class="display">

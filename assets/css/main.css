@@ -405,11 +405,10 @@ body {
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-  background: var(--urushi) !important;
-  border-color: var(--kin) !important;
-  color: var(--washi) !important;
+  background: var(--shu) !important;
+  border-color: var(--shu) !important;
+  color: #fff !important;
   font-weight: 600 !important;
-  box-shadow: inset 0 0 0 1px var(--kin);
 }
 
 .dataTables_wrapper .dataTables_info {
