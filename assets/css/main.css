@@ -42,7 +42,9 @@ body {
 
 /* ── グローバルナビバー ── */
 .global-nav {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   background: var(--urushi);
   border-bottom: 1px solid rgba(181,132,58,.22);
   overflow: hidden;
@@ -162,7 +164,7 @@ body {
 /* ── グラフグリッド ── */
 .chart-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);  /* 常に3列 */
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   align-items: start;
 }
@@ -172,7 +174,14 @@ body {
   flex-direction: column;
   align-items: center;
   gap: .85rem;
-  min-width: 0;   /* グリッドオーバーフロー防止 */
+  min-width: 0;
+}
+
+/* グラフ本体を囲むラッパー: サイズを固定して統一 */
+.chart-canvas-wrap {
+  width: 260px;
+  height: 260px;
+  flex-shrink: 0;
 }
 
 .chart-label {
@@ -192,8 +201,35 @@ body {
 .chart-label-san  { color: var(--moegi);  border-color: var(--moegi);  }
 
 .chart-cell canvas {
-  width: 200px !important;
-  height: 200px !important;
+  width: 260px !important;
+  height: 260px !important;
+}
+
+/* 凡例を2列・左寄せ */
+.chart-legend {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 12px;
+  margin-top: .5rem;
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  color: var(--ink-mid);
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.chart-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 /* ── リセットボタン ── */
@@ -322,10 +358,11 @@ body {
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-  background: var(--shu) !important;
-  border-color: var(--shu) !important;
-  color: #fff !important;
+  background: var(--urushi) !important;
+  border-color: var(--kin) !important;
+  color: var(--washi) !important;
   font-weight: 600 !important;
+  box-shadow: inset 0 0 0 1px var(--kin);
 }
 
 .dataTables_wrapper .dataTables_info {
@@ -669,4 +706,39 @@ footer::before {
 .submit-btn:disabled {
   opacity: .55;
   cursor: not-allowed;
+}
+
+/* ── TOPに戻るボタン ── */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  background: var(--urushi);
+  border: 1px solid rgba(181,132,58,.4);
+  color: var(--washi);
+  font-family: var(--sans);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, background .2s;
+  z-index: 999;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  background: var(--sumi);
+}
+
+@media (max-width: 768px) {
+  .back-to-top { bottom: 1rem; right: 1rem; }
 }

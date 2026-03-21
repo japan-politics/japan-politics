@@ -17,14 +17,14 @@ _PARTY_MAP_SYU = {
     '自民':    '自由民主党',
     '維新':    '日本維新の会',
     '国民':    '国民民主党',
-    '共産':    '日本共産党',
     '参政':    '参政党',
     'みらい':  'チームみらい',
+    '共産':    '日本共産党',
+    '社民':    '社会民主党',
+    '公明':    '公明党',
+    '立憲':    '立憲民主党',
     '中道':    '中道改革連合',
     '無':      '無所属',
-    # 以下は念のため（衆議院に出現した場合）
-    '立憲':    '立憲民主党',
-    '公明':    '公明党',
 }
 
 _PARTY_MAP_SAN = {
@@ -44,10 +44,10 @@ _PARTY_MAP_SAN = {
 }
 
 def normalize_party(party: str, chamber: str) -> str:
-    """院名に応じた略称→正式名称変換。マップにない場合はそのまま返す"""
+    """院名に応じた略称→正式名称変換。マップにない場合は None を返す"""
     party = party.strip()
     mapping = _PARTY_MAP_SYU if chamber == '衆議院' else _PARTY_MAP_SAN
-    return mapping.get(party, party)
+    return mapping.get(party, None)
 
 
 # ─── 共通ユーティリティ ───────────────────────────────────────
@@ -90,11 +90,14 @@ def get_shugiin_data():
                 if not re.search(r'[\u4e00-\u9fff\u3040-\u30ff]', kanji):
                     continue
 
+                party = normalize_party(tds[2].get_text(strip=True), '衆議院')
+                if party is None:
+                    continue  # マップにない会派はスキップ
                 all_members.append({
                     'chamber':  '衆議院',
                     'name':     clean_name(kanji),
                     'yomi':     clean_yomi(tds[1].get_text(separator='', strip=True)),
-                    'party':    normalize_party(tds[2].get_text(strip=True), '衆議院'),
+                    'party':    party,
                     'district': tds[3].get_text(strip=True),
                     'img_url':  '',
                 })
@@ -163,11 +166,14 @@ def _parse_sangiin_html(html_text: str):
         m    = re.search(r'profile/(\d+)\.htm', href)
         pid  = m.group(1) if m else ''
 
+        party = normalize_party(tds[2].get_text(strip=True), '参議院')
+        if party is None:
+            continue  # マップにない会派はスキップ
         members.append({
             'chamber':  '参議院',
             'name':     clean_name(tds[0].get_text(strip=True)),
             'yomi':     clean_yomi(tds[1].get_text(strip=True)),
-            'party':    normalize_party(tds[2].get_text(strip=True), '参議院'),
+            'party':    party,
             'district': tds[3].get_text(strip=True),
             'img_url':  (
                 f"https://www.sangiin.go.jp/japanese/joho1/kousei/giin/photo/g{pid}.jpg"

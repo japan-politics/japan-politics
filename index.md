@@ -46,6 +46,18 @@ title: 日本の政治
     </div>
     <div class="table-controls">
       <button onclick="resetAll()" class="reset-btn">選択をリセット</button>
+      <div class="table-length-wrap">
+        <select id="tableLengthSelect" class="form-input" style="width:auto;min-height:36px;padding:.3rem .6rem;font-size:.82rem;" onchange="$('#politicianTable').DataTable().page.len(this.value).draw()">
+          <option value="25">25件表示</option>
+          <option value="50">50件表示</option>
+          <option value="100" selected>100件表示</option>
+          <option value="-1">全件表示</option>
+        </select>
+      </div>
+      <div class="table-search-wrap">
+        <input type="search" id="tableSearch" class="form-input" style="width:180px;min-height:36px;padding:.3rem .7rem;font-size:.82rem;" placeholder="氏名・政党で検索"
+          oninput="$('#politicianTable').DataTable().search(this.value).draw()">
+      </div>
     </div>
     <table id="politicianTable" class="display">
       <thead>
