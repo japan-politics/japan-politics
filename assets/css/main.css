@@ -1,22 +1,22 @@
-/* ============================================================
-   日本の政治 — 和の公式デザインシステム
-   視認性強化版（WCAG AA準拠・全年齢対応）
+﻿/* ============================================================
+   譌･譛ｬ縺ｮ謾ｿ豐ｻ 窶・蜥後・蜈ｬ蠑上ョ繧ｶ繧､繝ｳ繧ｷ繧ｹ繝・Β
+   隕冶ｪ肴ｧ蠑ｷ蛹也沿・・CAG AA貅匁侠繝ｻ蜈ｨ蟷ｴ鮨｢蟇ｾ蠢懶ｼ・
    ============================================================ */
 
 :root {
-  /* コアパレット */
+  /* 繧ｳ繧｢繝代Ξ繝・ヨ */
   --urushi:      #1a1008;
   --sumi:        #2d2416;
   --washi:       #f8f4ee;
   --washi2:      #ede8df;
-  --shu:         #8c1f10;       /* コントラスト強化: 4.5:1以上 */
-  --kin:         #9a6e28;       /* コントラスト強化 */
-  --moegi:       #2a5a3a;       /* コントラスト強化 */
-  --ink:         #1a1410;       /* ほぼ黒: 最高可読性 */
+  --shu:         #8c1f10;       /* 繧ｳ繝ｳ繝医Λ繧ｹ繝亥ｼｷ蛹・ 4.5:1莉･荳・*/
+  --kin:         #9a6e28;       /* 繧ｳ繝ｳ繝医Λ繧ｹ繝亥ｼｷ蛹・*/
+  --moegi:       #2a5a3a;       /* 繧ｳ繝ｳ繝医Λ繧ｹ繝亥ｼｷ蛹・*/
+  --ink:         #1a1410;       /* 縺ｻ縺ｼ鮟・ 譛鬮伜庄隱ｭ諤ｧ */
   --ink-mid:     #3a2e22;
-  --ink-light:   #5a5048;       /* WCAG AA対応 */
+  --ink-light:   #5a5048;       /* WCAG AA蟇ｾ蠢・*/
   --rule:        #c8bfb2;
-  --focus:       #1a5ca8;       /* フォーカスリング用 */
+  --focus:       #1a5ca8;       /* 繝輔か繝ｼ繧ｫ繧ｹ繝ｪ繝ｳ繧ｰ逕ｨ */
 
   --serif: 'Noto Serif JP', Georgia, serif;
   --sans:  'Noto Sans JP', system-ui, sans-serif;
@@ -29,18 +29,18 @@ body {
   font-family: var(--serif);
   background: var(--washi);
   color: var(--ink);
-  font-size: 17px;             /* 16→17px: 高齢者に配慮 */
+  font-size: 17px;             /* 16竊・7px: 鬮倬ｽ｢閠・↓驟肴・ */
   line-height: 1.9;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── フォーカスリング（キーボード操作対応） ── */
+/* 笏笏 繝輔か繝ｼ繧ｫ繧ｹ繝ｪ繝ｳ繧ｰ・医く繝ｼ繝懊・繝画桃菴懷ｯｾ蠢懶ｼ・笏笏 */
 :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 
-/* ── グローバルナビバー ── */
+/* 笏笏 繧ｰ繝ｭ繝ｼ繝舌Ν繝翫ン繝舌・ 笏笏 */
 .global-nav {
   position: relative;
   background: var(--urushi);
@@ -52,7 +52,7 @@ body {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 4px;                 /* 3→4px: 存在感アップ */
+  height: 4px;                 /* 3竊・px: 蟄伜惠諢溘い繝・・ */
   background: linear-gradient(
     90deg,
     transparent 0%, var(--kin) 25%,
@@ -66,12 +66,12 @@ body {
   padding: 0 1.5rem;
   display: flex;
   align-items: center;
-  height: 56px;                /* 52→56px: タップ領域拡大 */
+  height: 56px;                /* 52竊・6px: 繧ｿ繝・・鬆伜沺諡｡螟ｧ */
 }
 
 .site-title {
   font-family: var(--serif);
-  font-size: 1.05rem;          /* やや大きく */
+  font-size: 1.05rem;          /* 繧・ｄ螟ｧ縺阪￥ */
   font-weight: 500;
   letter-spacing: 0.1em;
   color: var(--washi);
@@ -89,15 +89,15 @@ body {
 .nav-links a {
   display: block;
   font-family: var(--sans);
-  font-size: 0.8rem;           /* 0.72→0.8: 読みやすく */
-  font-weight: 500;            /* 400→500 */
+  font-size: 0.8rem;           /* 0.72竊・.8: 隱ｭ縺ｿ繧・☆縺・*/
+  font-weight: 500;            /* 400竊・00 */
   letter-spacing: 0.1em;
-  color: rgba(248,244,238,.75); /* 0.58→0.75: コントラスト改善 */
+  color: rgba(248,244,238,.75); /* 0.58竊・.75: 繧ｳ繝ｳ繝医Λ繧ｹ繝域隼蝟・*/
   text-decoration: none;
   padding: 0 1rem;
   height: 56px;
   line-height: 56px;
-  border-bottom: 3px solid transparent; /* 2→3px */
+  border-bottom: 3px solid transparent; /* 2竊・px */
   transition: color .2s, border-color .2s;
 }
 
@@ -107,18 +107,18 @@ body {
   border-bottom-color: var(--shu);
 }
 
-/* ── レイアウト ── */
+/* 笏笏 繝ｬ繧､繧｢繧ｦ繝・笏笏 */
 .dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 1.5rem 5rem;
 }
 
-/* ── セクション ── */
+/* 笏笏 繧ｻ繧ｯ繧ｷ繝ｧ繝ｳ 笏笏 */
 .section-block {
   margin-bottom: 4.5rem;
   padding-top: 2.5rem;
-  border-top: 2px solid var(--rule); /* 1→2px */
+  border-top: 2px solid var(--rule); /* 1竊・px */
   animation: fadeUp .55s ease both;
 }
 
@@ -137,8 +137,8 @@ body {
 
 .section-title {
   font-family: var(--serif);
-  font-size: clamp(1.35rem, 2.5vw, 1.75rem); /* 大きく */
-  font-weight: 600;            /* 500→600 */
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem); /* 螟ｧ縺阪￥ */
+  font-weight: 600;            /* 500竊・00 */
   color: var(--urushi);
   letter-spacing: 0.08em;
   margin-bottom: 0.5rem;
@@ -146,7 +146,7 @@ body {
 
 .section-subtitle {
   font-family: var(--sans);
-  font-size: 0.82rem;          /* 0.62→0.82: 読みやすく */
+  font-size: 0.82rem;          /* 0.62竊・.82: 隱ｭ縺ｿ繧・☆縺・*/
   font-weight: 400;
   letter-spacing: 0.1em;
   color: var(--ink-light);
@@ -154,15 +154,15 @@ body {
 }
 
 .section-mark {
-  width: 28px; height: 2px;   /* 太く */
+  width: 28px; height: 2px;   /* 螟ｪ縺・*/
   background: var(--shu);
   margin: .8rem auto 0;
 }
 
-/* ── グラフグリッド ── */
+/* 笏笏 繧ｰ繝ｩ繝輔げ繝ｪ繝・ラ 笏笏 */
 .chart-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);  /* 常に3列 */
+  grid-template-columns: repeat(3, 1fr);  /* 蟶ｸ縺ｫ3蛻・*/
   gap: 2rem;
   align-items: start;
 }
@@ -172,16 +172,16 @@ body {
   flex-direction: column;
   align-items: center;
   gap: .85rem;
-  min-width: 0;   /* グリッドオーバーフロー防止 */
+  min-width: 0;   /* 繧ｰ繝ｪ繝・ラ繧ｪ繝ｼ繝舌・繝輔Ο繝ｼ髦ｲ豁｢ */
 }
 
 .chart-label {
   font-family: var(--sans);
-  font-size: 0.72rem;          /* 0.6→0.72 */
+  font-size: 0.72rem;          /* 0.6竊・.72 */
   font-weight: 600;
   letter-spacing: .14em;
-  padding: .3rem 1rem;         /* タップ領域拡大 */
-  border: 1.5px solid;        /* 1→1.5px */
+  padding: .3rem 1rem;         /* 繧ｿ繝・・鬆伜沺諡｡螟ｧ */
+  border: 1.5px solid;        /* 1竊・.5px */
 }
 
 .chart-label-all  { color: var(--urushi); border-color: var(--urushi); }
@@ -193,19 +193,19 @@ body {
   width: 100%;
 }
 
-/* ── リセットボタン ── */
+/* 笏笏 繝ｪ繧ｻ繝・ヨ繝懊ち繝ｳ 笏笏 */
 .reset-btn {
   font-family: var(--sans);
-  font-size: 0.82rem;          /* 大きく */
+  font-size: 0.82rem;          /* 螟ｧ縺阪￥ */
   font-weight: 500;
   letter-spacing: 0.1em;
   color: var(--ink-light);
   background: transparent;
   border: 1.5px solid var(--rule);
-  padding: .55rem 1.8rem;      /* タップ領域拡大 */
+  padding: .55rem 1.8rem;      /* 繧ｿ繝・・鬆伜沺諡｡螟ｧ */
   cursor: pointer;
   transition: color .2s, border-color .2s, background .2s;
-  min-height: 44px;            /* WCAG最小タップ高さ */
+  min-height: 44px;            /* WCAG譛蟆上ち繝・・鬮倥＆ */
 }
 
 .reset-btn:hover {
@@ -214,10 +214,10 @@ body {
   background: var(--washi2);
 }
 
-/* ── DataTable ── */
+/* 笏笏 DataTable 笏笏 */
 .dataTables_wrapper {
   font-family: var(--sans);
-  font-size: 0.9rem;           /* 0.85→0.9 */
+  font-size: 0.9rem;           /* 0.85竊・.9 */
   color: var(--ink);
 }
 
@@ -232,7 +232,7 @@ body {
   font-family: var(--sans);
   font-size: 0.88rem;
   border: 1.5px solid var(--rule);
-  padding: .45rem .75rem;      /* 大きく */
+  padding: .45rem .75rem;      /* 螟ｧ縺阪￥ */
   border-radius: 0;
   background: var(--washi);
   color: var(--ink);
@@ -255,13 +255,13 @@ body {
 
 #politicianTable thead th {
   font-family: var(--sans) !important;
-  font-size: 0.75rem !important; /* 0.62→0.75 */
+  font-size: 0.75rem !important; /* 0.62竊・.75 */
   font-weight: 600 !important;
   letter-spacing: .1em !important;
   color: var(--urushi) !important;
-  background: var(--washi2) !important; /* 背景色追加で視認性向上 */
+  background: var(--washi2) !important; /* 閭梧勹濶ｲ霑ｽ蜉縺ｧ隕冶ｪ肴ｧ蜷台ｸ・*/
   border-bottom: 2px solid var(--urushi) !important;
-  padding: 1rem .85rem !important; /* 大きく */
+  padding: 1rem .85rem !important; /* 螟ｧ縺阪￥ */
   white-space: nowrap;
 }
 
@@ -271,7 +271,7 @@ body {
 }
 
 #politicianTable tbody tr:nth-child(even) {
-  background: rgba(240,235,226,.45); /* 縞模様で行の識別を容易に */
+  background: rgba(240,235,226,.45); /* 邵樊ｨ｡讒倥〒陦後・隴伜挨繧貞ｮｹ譏薙↓ */
 }
 
 #politicianTable tbody tr:hover {
@@ -280,14 +280,14 @@ body {
 
 #politicianTable tbody td {
   font-family: var(--sans) !important;
-  font-size: 0.9rem !important;  /* 0.85→0.9 */
-  padding: .85rem .85rem !important; /* 行高さ拡大 */
+  font-size: 0.9rem !important;  /* 0.85竊・.9 */
+  padding: .85rem .85rem !important; /* 陦碁ｫ倥＆諡｡螟ｧ */
   vertical-align: middle;
   color: var(--ink-mid);
   line-height: 1.5;
 }
 
-/* ふりがな */
+/* 縺ｵ繧翫′縺ｪ */
 .yomi {
   display: block;
   font-size: 0.7rem;
@@ -297,14 +297,14 @@ body {
   font-family: var(--sans);
 }
 
-/* ページネーション */
+/* 繝壹・繧ｸ繝阪・繧ｷ繝ｧ繝ｳ */
 .dataTables_wrapper .dataTables_paginate .paginate_button {
   font-family: var(--sans);
-  font-size: 0.85rem !important; /* 大きく */
+  font-size: 0.85rem !important; /* 螟ｧ縺阪￥ */
   border-radius: 0 !important;
   border: 1.5px solid var(--rule) !important;
   margin: 0 2px !important;
-  padding: .4rem .85rem !important; /* 大きく */
+  padding: .4rem .85rem !important; /* 螟ｧ縺阪￥ */
   color: var(--ink-mid) !important;
   min-height: 44px;
   display: inline-flex !important;
@@ -335,9 +335,9 @@ body {
   font-size: 0.82rem;
 }
 
-/* ── 議員写真 ── */
+/* 笏笏 隴ｰ蜩｡蜀咏悄 笏笏 */
 .giin-photo {
-  width: 52px; height: 68px;  /* 少し大きく */
+  width: 52px; height: 68px;  /* 蟆代＠螟ｧ縺阪￥ */
   object-fit: cover;
   display: block;
   border: 1px solid var(--rule);
@@ -350,38 +350,38 @@ body {
   transform: scale(1.06);
 }
 
-/* ── バッジ ── */
+/* 笏笏 繝舌ャ繧ｸ 笏笏 */
 .badge {
   display: inline-block;
   font-family: var(--sans);
-  font-size: 0.7rem;           /* 0.58→0.7: 読みやすく */
+  font-size: 0.7rem;           /* 0.58竊・.7: 隱ｭ縺ｿ繧・☆縺・*/
   font-weight: 600;
   letter-spacing: .08em;
-  padding: .28rem .8rem;       /* タップ領域拡大 */
+  padding: .28rem .8rem;       /* 繧ｿ繝・・鬆伜沺諡｡螟ｧ */
   border: 1.5px solid;
 }
 
 .badge-shugiin {
-  color: #6e1408;              /* コントラスト強化 */
+  color: #6e1408;              /* 繧ｳ繝ｳ繝医Λ繧ｹ繝亥ｼｷ蛹・*/
   border-color: #8c1f10;
   background: rgba(140,31,16,.06);
 }
 
 .badge-sangiin {
-  color: #1e4a2e;              /* コントラスト強化 */
+  color: #1e4a2e;              /* 繧ｳ繝ｳ繝医Λ繧ｹ繝亥ｼｷ蛹・*/
   border-color: #2a5a3a;
   background: rgba(42,90,58,.06);
 }
 
-/* ── フッター ── */
+/* 笏笏 繝輔ャ繧ｿ繝ｼ 笏笏 */
 footer {
   background: var(--urushi);
   border-top: 1px solid rgba(181,132,58,.2);
-  color: rgba(248,244,238,.55); /* 0.38→0.55: コントラスト改善 */
+  color: rgba(248,244,238,.55); /* 0.38竊・.55: 繧ｳ繝ｳ繝医Λ繧ｹ繝域隼蝟・*/
   text-align: center;
   padding: 2rem 1.5rem;
   font-family: var(--sans);
-  font-size: 0.78rem;          /* 大きく */
+  font-size: 0.78rem;          /* 螟ｧ縺阪￥ */
   letter-spacing: .08em;
   line-height: 1.7;
 }
@@ -395,7 +395,7 @@ footer::before {
   opacity: .5;
 }
 
-/* ── レスポンシブ ── */
+/* 笏笏 繝ｬ繧ｹ繝昴Φ繧ｷ繝・笏笏 */
 @media (max-width: 768px) {
   body { font-size: 16px; }
 
@@ -431,7 +431,7 @@ footer::before {
   .chart-label { font-size: 0.65rem; }
 }
 
-/* ── 写真プレースホルダー ── */
+/* 笏笏 蜀咏悄繝励Ξ繝ｼ繧ｹ繝帙Ν繝繝ｼ 笏笏 */
 .photo-placeholder {
   width: 52px;
   height: 68px;
@@ -445,7 +445,7 @@ footer::before {
   border: 1px solid var(--rule);
 }
 
-/* ── フッター ── */
+/* 笏笏 繝輔ャ繧ｿ繝ｼ 笏笏 */
 .site-footer {
   background: var(--urushi);
   border-top: 1px solid rgba(181,132,58,.2);
@@ -483,7 +483,7 @@ footer::before {
   letter-spacing: .06em;
 }
 
-/* ── このサイトについて ── */
+/* 笏笏 縺薙・繧ｵ繧､繝医↓縺､縺・※ 笏笏 */
 .about-content {
   max-width: 720px;
   margin: 0 auto;
@@ -528,7 +528,7 @@ footer::before {
 
 .about-list a:hover { text-decoration: underline; }
 
-/* ── お問い合わせフォーム ── */
+/* 笏笏 縺雁撫縺・粋繧上○繝輔か繝ｼ繝 笏笏 */
 .contact-content {
   max-width: 640px;
   margin: 0 auto;
@@ -599,7 +599,7 @@ footer::before {
 .submit-btn:hover { background: var(--sumi); }
 .submit-btn:active { opacity: .85; }
 
-/* ── 送信完了ページ ── */
+/* 笏笏 騾∽ｿ｡螳御ｺ・・繝ｼ繧ｸ 笏笏 */
 .thanks-icon {
   font-size: 2.5rem;
   color: var(--moegi);
@@ -621,11 +621,11 @@ footer::before {
 
 .back-link:hover { opacity: .7; }
 
-/* ── レスポンシブ ── */
+/* 笏笏 繝ｬ繧ｹ繝昴Φ繧ｷ繝・笏笏 */
 @media (max-width: 768px) {
 }
 
-/* ── お問い合わせ補足 ── */
+/* 笏笏 縺雁撫縺・粋繧上○陬懆ｶｳ 笏笏 */
 .contact-note {
   font-family: var(--sans);
   font-size: 0.78rem;
@@ -641,7 +641,7 @@ footer::before {
 
 .contact-note a:hover { text-decoration: underline; }
 
-/* ── フォーム送信結果 ── */
+/* 笏笏 繝輔か繝ｼ繝騾∽ｿ｡邨先棡 笏笏 */
 .form-result {
   font-family: var(--sans);
   font-size: 0.88rem;

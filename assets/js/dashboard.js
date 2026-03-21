@@ -1,21 +1,21 @@
-const rulingParties = ['自由民主党', '日本維新の会'];
+﻿const rulingParties = ['閾ｪ逕ｱ豌台ｸｻ蜈・, '譌･譛ｬ邯ｭ譁ｰ縺ｮ莨・];
 
 const partyColors = {
-  '自由民主党':       '#3a5f8a',
-  '日本維新の会':     '#4a7c5f',
-  '立憲民主党':       '#7a5c3a',
-  '立憲民主・無所属': '#8a7050',
-  '公明党':           '#8a6a2a',
-  '国民民主党':       '#5a5a7a',
-  '日本共産党':       '#7a3a4a',
-  '参政党':           '#4a6a4a',
-  '社会民主党':       '#2a6b6b',
-  'れいわ新選組':     '#6a3a7a',
-  '有志の会':         '#5a6a3a',
-  'みらいの風':       '#3a6a7a',
-  '日本保守党':       '#7a5a3a',
-  '沖縄の風':         '#3a7a6a',
-  '無所属':           '#888780',
+  '閾ｪ逕ｱ豌台ｸｻ蜈・:       '#3a5f8a',
+  '譌･譛ｬ邯ｭ譁ｰ縺ｮ莨・:     '#4a7c5f',
+  '遶区・豌台ｸｻ蜈・:       '#7a5c3a',
+  '遶区・豌台ｸｻ繝ｻ辟｡謇螻・: '#8a7050',
+  '蜈ｬ譏主・':           '#8a6a2a',
+  '蝗ｽ豌第ｰ台ｸｻ蜈・:       '#5a5a7a',
+  '譌･譛ｬ蜈ｱ逕｣蜈・:       '#7a3a4a',
+  '蜿よ帆蜈・:           '#4a6a4a',
+  '遉ｾ莨壽ｰ台ｸｻ蜈・:       '#2a6b6b',
+  '繧後＞繧乗眠驕ｸ邨・:     '#6a3a7a',
+  '譛牙ｿ励・莨・:         '#5a6a3a',
+  '縺ｿ繧峨＞縺ｮ鬚ｨ':       '#3a6a7a',
+  '譌･譛ｬ菫晏ｮ亥・':       '#7a5a3a',
+  '豐也ｸ・・鬚ｨ':         '#3a7a6a',
+  '辟｡謇螻・:           '#888780',
 };
 const fallbackColors = [
   '#3a5f8a','#4a7c5f','#8a6a2a','#7a5c3a','#5a5a7a',
@@ -32,8 +32,8 @@ function sortPartyData(obj) {
   return [...ruling, ...nonRuling];
 }
 
-// 凡例も議席数降順に並べるカスタムプラグイン
-// Chart.jsの凡例はdata順なので、sortPartyDataの順序がそのまま反映される
+// 蜃｡萓九ｂ隴ｰ蟶ｭ謨ｰ髯埼・↓荳ｦ縺ｹ繧九き繧ｹ繧ｿ繝繝励Λ繧ｰ繧､繝ｳ
+// Chart.js縺ｮ蜃｡萓九・data鬆・↑縺ｮ縺ｧ縲《ortPartyData縺ｮ鬆・ｺ上′縺昴・縺ｾ縺ｾ蜿肴丐縺輔ｌ繧・
 
 const centerTextPlugin = {
   id: 'centerText',
@@ -56,14 +56,14 @@ const centerTextPlugin = {
       ctx.fillText(total, cx, cy - 8);
       ctx.font      = `400 0.68rem 'Noto Sans JP', sans-serif`;
       ctx.fillStyle = '#5a5048';
-      ctx.fillText('総議席', cx, cy + 14);
+      ctx.fillText('邱剰ｭｰ蟶ｭ', cx, cy + 14);
     } else {
       ctx.font      = `600 1.3rem 'Noto Serif JP', serif`;
       ctx.fillStyle = '#1a1410';
       ctx.fillText(selSeats, cx, cy - 15);
       ctx.font      = `300 0.58rem 'Noto Sans JP', sans-serif`;
       ctx.fillStyle = '#b0a090';
-      ctx.fillText('───────', cx, cy + 1);
+      ctx.fillText('笏笏笏笏笏笏笏', cx, cy + 1);
       ctx.font      = `400 0.8rem 'Noto Serif JP', serif`;
       ctx.fillStyle = '#3a2e22';
       ctx.fillText(total, cx, cy + 17);
@@ -99,7 +99,7 @@ function renderChart(id, obj, houseKey) {
       plugins: {
         legend: {
           position: 'bottom',
-          align: 'start',        // 左揃えで整列
+          align: 'start',        // 蟾ｦ謠・∴縺ｧ謨ｴ蛻・
           labels: {
             font: { family: "'Noto Sans JP', sans-serif", size: 11 },
             color: '#3a2e22',
@@ -108,7 +108,7 @@ function renderChart(id, obj, houseKey) {
             padding: 10,
             pointStyle: 'rect',
             usePointStyle: true,
-            // 2列表示のため最大幅を制限
+            // 2蛻苓｡ｨ遉ｺ縺ｮ縺溘ａ譛螟ｧ蟷・ｒ蛻ｶ髯・
             generateLabels(chart) {
               const data = chart.data;
               return data.labels.map((label, i) => ({
@@ -181,8 +181,8 @@ function filterTable(houseKey, parties) {
     $.fn.dataTable.ext.search.push(function(settings, data) {
       const chamberCell = data[1] || '';
       const partyCell   = data[3] || '';
-      if (houseKey === 'syu' && !chamberCell.includes('衆議院')) return false;
-      if (houseKey === 'san' && !chamberCell.includes('参議院')) return false;
+      if (houseKey === 'syu' && !chamberCell.includes('陦・ｭｰ髯｢')) return false;
+      if (houseKey === 'san' && !chamberCell.includes('蜿りｭｰ髯｢')) return false;
       if (parties && parties.length > 0) {
         if (!parties.some(p => partyCell.includes(p))) return false;
       }
@@ -214,13 +214,13 @@ function setupDashboard(dataAll, dataSyu, dataSan) {
         targets: 0,
         orderable: false,
         render: d => d
-          ? `<img src="${d}" class="giin-photo" loading="lazy" onerror="this.src='https://placehold.jp/24/d8d0c4/7a6e5f/52x68.png?text=写真'">`
-          : `<div class="photo-placeholder">写真</div>`
+          ? `<img src="${d}" class="giin-photo" loading="lazy" onerror="this.src='https://placehold.jp/24/d8d0c4/7a6e5f/52x68.png?text=蜀咏悄'">`
+          : `<div class="photo-placeholder">蜀咏悄</div>`
       },
       {
         targets: 1,
         render: d => d
-          ? `<span class="badge ${d === '衆議院' ? 'badge-shugiin' : 'badge-sangiin'}">${d}</span>`
+          ? `<span class="badge ${d === '陦・ｭｰ髯｢' ? 'badge-shugiin' : 'badge-sangiin'}">${d}</span>`
           : ''
       }
     ]
@@ -232,13 +232,13 @@ function setupDashboard(dataAll, dataSyu, dataSan) {
         targets: 0,
         orderable: false,
         render: d => d
-          ? `<img src="${d}" class="giin-photo" loading="lazy" onerror="this.src='https://placehold.jp/24/d8d0c4/7a6e5f/52x68.png?text=写真'">`
-          : `<div class="photo-placeholder">写真</div>`
+          ? `<img src="${d}" class="giin-photo" loading="lazy" onerror="this.src='https://placehold.jp/24/d8d0c4/7a6e5f/52x68.png?text=蜀咏悄'">`
+          : `<div class="photo-placeholder">蜀咏悄</div>`
       },
       {
         targets: 1,
         render: d => d
-          ? `<span class="badge ${d === '衆議院' ? 'badge-shugiin' : 'badge-sangiin'}">${d}</span>`
+          ? `<span class="badge ${d === '陦・ｭｰ髯｢' ? 'badge-shugiin' : 'badge-sangiin'}">${d}</span>`
           : ''
       }
     ]

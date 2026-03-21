@@ -1,1 +1,1 @@
-﻿# japan-politics
+﻿・ｿ# japan-politics

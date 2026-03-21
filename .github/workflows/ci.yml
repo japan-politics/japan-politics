@@ -1,8 +1,8 @@
-name: Update and Deploy
+﻿name: Update and Deploy
 
 on:
   schedule:
-    - cron: '0 15 * * *'  # 日本時間 午前0時
+    - cron: '0 15 * * *'  # 譌･譛ｬ譎る俣 蜊亥燕0譎・
   push:
     branches: ["main"]
     paths:
@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # ── Job 1: データ更新（スケジュール・手動時のみ実行）──────
+  # 笏笏 Job 1: 繝・・繧ｿ譖ｴ譁ｰ・医せ繧ｱ繧ｸ繝･繝ｼ繝ｫ繝ｻ謇句虚譎ゅ・縺ｿ螳溯｡鯉ｼ俄楳笏笏笏笏笏
   update:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
@@ -64,12 +64,12 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-  # ── Job 2: Jekyll ビルド＆デプロイ ───────────────────────
+  # 笏笏 Job 2: Jekyll 繝薙Ν繝会ｼ・ョ繝励Ο繧､ 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
   build-and-deploy:
     runs-on: ubuntu-latest
-    # update job が存在する場合はその完了を待つ
+    # update job 縺悟ｭ伜惠縺吶ｋ蝣ｴ蜷医・縺昴・螳御ｺ・ｒ蠕・▽
     needs: [update]
-    # update が skipped または成功した場合のみ実行
+    # update 縺・skipped 縺ｾ縺溘・謌仙粥縺励◆蝣ｴ蜷医・縺ｿ螳溯｡・
     if: |
       always() &&
       (needs.update.result == 'success' || needs.update.result == 'skipped')
@@ -80,7 +80,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # update job が CSV をプッシュした後の最新を取得
+          # update job 縺・CSV 繧偵・繝・す繝･縺励◆蠕後・譛譁ｰ繧貞叙蠕・
           ref: main
 
       - name: Setup Pages
