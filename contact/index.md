@@ -1,86 +1,97 @@
 ---
 layout: default
-title: 日本の政治
+title: お問い合わせ
 ---
-
-{% assign all = site.data.politicians %}
-{% assign syu = all | where: "chamber", "衆議院" %}
-{% assign san = all | where: "chamber", "参議院" %}
-
-{% assign g_all = all | group_by: "party" %}
-{% assign g_syu = syu | group_by: "party" %}
-{% assign g_san = san | group_by: "party" %}
-
-<script>
-var dataAll = { {% for i in g_all %}{{ i.name | jsonify }}:{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} };
-var dataSyu = { {% for i in g_syu %}{{ i.name | jsonify }}:{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} };
-var dataSan = { {% for i in g_san %}{{ i.name | jsonify }}:{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} };
-</script>
 
 {% include header.html %}
 
 <div class="dashboard-container">
-
   <div class="section-block">
     <div class="section-header">
-      <h2 class="section-title">現在の議席配分</h2>
-      <p class="section-subtitle">グラフをクリックして政党を選択</p>
+      <h2 class="section-title">お問い合わせ</h2>
       <div class="section-mark"></div>
     </div>
-    <div class="chart-grid">
-      <div class="chart-cell">
-        <span class="chart-label chart-label-all">国　会</span>
-        <canvas id="chartAll"></canvas>
-      </div>
-      <div class="chart-cell">
-        <span class="chart-label chart-label-syu">衆議院</span>
-        <canvas id="chartSyu"></canvas>
-      </div>
-      <div class="chart-cell">
-        <span class="chart-label chart-label-san">参議院</span>
-        <canvas id="chartSan"></canvas>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:1.75rem;">
-      <button id="resetBtn" onclick="resetAll()" class="reset-btn">選択をリセット</button>
+
+    <div class="contact-content">
+      <p class="contact-lead">データの誤り・ご意見・ご要望などは以下のフォームよりお送りください。</p>
+
+      <form class="contact-form" id="contactForm">
+        <input type="hidden" name="access_key" value="142535ed-d4d0-4cc8-b468-b71ee8c58bc8">
+        <input type="hidden" name="subject" value="【日本の政治】お問い合わせ">
+        <input type="hidden" name="from_name" value="日本の政治 お問い合わせフォーム">
+        <input type="checkbox" name="botcheck" style="display:none">
+
+        <div class="form-group">
+          <label class="form-label" for="name">お名前</label>
+          <input class="form-input" type="text" id="name" name="name"
+            placeholder="山田 太郎" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">メールアドレス</label>
+          <input class="form-input" type="email" id="email" name="email"
+            placeholder="example@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category">件名</label>
+          <select class="form-input" id="category" name="category" required>
+            <option value="" disabled selected>選択してください</option>
+            <option value="データの誤りについて">データの誤りについて</option>
+            <option value="機能の要望">機能の要望</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="message">お問い合わせ内容</label>
+          <textarea class="form-input form-textarea" id="message" name="message"
+            rows="6" placeholder="お問い合わせ内容をご記入ください" required></textarea>
+        </div>
+
+        <div class="form-submit">
+          <button type="submit" class="submit-btn" id="submitBtn">送信する</button>
+        </div>
+
+        <div id="formResult" class="form-result" style="display:none"></div>
+      </form>
     </div>
   </div>
-
-  <div class="section-block">
-    <div class="section-header">
-      <h2 class="section-title">国会議員一覧</h2>
-      <div class="section-mark"></div>
-    </div>
-    <table id="politicianTable" class="display">
-      <thead>
-        <tr>
-          <th>写真</th>
-          <th>院名</th>
-          <th>氏名・ふりがな</th>
-          <th>会派</th>
-          <th>選挙区</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for p in site.data.politicians %}
-        <tr>
-          <td>{{ p.img_url }}</td>
-          <td>{{ p.chamber }}</td>
-          <td data-sort="{{ p.yomi }}">{{ p.name }}<br><span class="yomi">{{ p.yomi }}</span></td>
-          <td>{{ p.party }}</td>
-          <td>{{ p.district }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
 </div>
 
 {% include footer.html %}
 
 <script>
-$(document).ready(function() {
-  setupDashboard(dataAll, dataSyu, dataSan);
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  var result = document.getElementById('formResult');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+  result.style.display = 'none';
+
+  var data = new FormData(this);
+  try {
+    var res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: data
+    });
+    var json = await res.json();
+    if (json.success) {
+      result.className = 'form-result form-result--ok';
+      result.textContent = 'お問い合わせを受け付けました。ありがとうございます。';
+      result.style.display = 'block';
+      this.reset();
+    } else {
+      throw new Error(json.message);
+    }
+  } catch(err) {
+    result.className = 'form-result form-result--err';
+    result.textContent = '送信に失敗しました。しばらく経ってから再度お試しください。';
+    result.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '送信する';
+  }
 });
 </script>

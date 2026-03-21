@@ -624,3 +624,46 @@ footer::before {
 /* ── レスポンシブ ── */
 @media (max-width: 768px) {
 }
+
+/* ── お問い合わせ補足 ── */
+.contact-note {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  line-height: 1.7;
+  margin-top: 1rem;
+}
+
+.contact-note a {
+  color: var(--shu);
+  text-decoration: none;
+}
+
+.contact-note a:hover { text-decoration: underline; }
+
+/* ── フォーム送信結果 ── */
+.form-result {
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  padding: .85rem 1rem;
+  margin-top: .5rem;
+  border-left: 3px solid;
+  line-height: 1.6;
+}
+
+.form-result--ok {
+  color: var(--moegi);
+  border-color: var(--moegi);
+  background: rgba(42,90,58,.05);
+}
+
+.form-result--err {
+  color: var(--shu);
+  border-color: var(--shu);
+  background: rgba(140,31,16,.05);
+}
+
+.submit-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
