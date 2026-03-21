@@ -10,18 +10,24 @@ import os, time, re
 
 
 # ─── 党名正規化マップ ─────────────────────────────────────────
-# スクレイピングで取得される略称 → 正式名称
-PARTY_MAP = {
-    # 衆議院
+# 衆議院・参議院で略称が共通のものは同じ正式名称に統一
+# ※ Pythonの dict はキー重複不可（後勝ち）のため院ごとに分離
+
+_PARTY_MAP_SYU = {
     '自民':    '自由民主党',
-    '中道':    '中道改革連合',
     '維新':    '日本維新の会',
     '国民':    '国民民主党',
     '共産':    '日本共産党',
     '参政':    '参政党',
     'みらい':  'チームみらい',
+    '中道':    '中道改革連合',
     '無':      '無所属',
-    # 参議院
+    # 以下は念のため（衆議院に出現した場合）
+    '立憲':    '立憲民主党',
+    '公明':    '公明党',
+}
+
+_PARTY_MAP_SAN = {
     '自民':    '自由民主党',
     '立憲':    '中道改革連合',
     '民主':    '国民民主党',
@@ -34,46 +40,27 @@ PARTY_MAP = {
     '沖縄':    '沖縄の風',
     'みら':    'チームみらい',
     '社民':    '社会民主党',
-    '無所属':    '無所属'
+    '無所属':  '無所属',
 }
 
-def normalize_party(party: str) -> str:
-    """略称を正式名称に変換。マップにない場合はそのまま返す"""
-    return PARTY_MAP.get(party.strip(), party.strip())
+def normalize_party(party: str, chamber: str) -> str:
+    """院名に応じた略称→正式名称変換。マップにない場合はそのまま返す"""
+    party = party.strip()
+    mapping = _PARTY_MAP_SYU if chamber == '衆議院' else _PARTY_MAP_SAN
+    return mapping.get(party, party)
 
 
 # ─── 共通ユーティリティ ───────────────────────────────────────
 
 def clean_name(s: str) -> str:
-    """氏名のスペース・全角スペース・「君」を除去"""
+    """氏名のスペース・全角スペース・「君」・旧姓[]表記を除去"""
+    s = re.sub(r'\[.*?\]', '', s)          # [旧姓] を除去
     return re.sub(r'[君\s\u3000]+', '', s)
 
 def clean_yomi(s: str) -> str:
     """ふりがなのスペース・全角スペースを除去"""
     return re.sub(r'[\s\u3000]+', '', s)
 
-_REIWA_BASE  = 2018  # 令和N年 = 2018+N
-_HEISEI_BASE = 1988  # 平成N年 = 1988+N
-_SHOWA_BASE  = 1925  # 昭和N年 = 1925+N
-
-def wareki_to_yyyymmdd(s: str) -> str:
-    """和暦日付文字列を yyyymmdd に変換。変換不能な場合は元の文字列を返す"""
-    s = s.strip()
-    if not s:
-        return ''
-    for pattern, base in [
-        (r'令和\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日', _REIWA_BASE),
-        (r'平成\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日', _HEISEI_BASE),
-        (r'昭和\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日', _SHOWA_BASE),
-    ]:
-        m = re.match(pattern, s)
-        if m:
-            y = base + int(m.group(1))
-            return f"{y}{int(m.group(2)):02d}{int(m.group(3)):02d}"
-    m = re.match(r'(\d{4})[/-](\d{1,2})[/-](\d{1,2})', s)
-    if m:
-        return f"{m.group(1)}{int(m.group(2)):02d}{int(m.group(3)):02d}"
-    return s
 
 
 # ─── 衆議院 ───────────────────────────────────────────────────
@@ -107,10 +94,8 @@ def get_shugiin_data():
                     'chamber':  '衆議院',
                     'name':     clean_name(kanji),
                     'yomi':     clean_yomi(tds[1].get_text(separator='', strip=True)),
-                    'party':    normalize_party(tds[2].get_text(strip=True)),
+                    'party':    normalize_party(tds[2].get_text(strip=True), '衆議院'),
                     'district': tds[3].get_text(strip=True),
-                    'term':     '',
-                    'wins':     tds[4].get_text(strip=True),
                     'img_url':  '',
                 })
                 found += 1
@@ -182,10 +167,8 @@ def _parse_sangiin_html(html_text: str):
             'chamber':  '参議院',
             'name':     clean_name(tds[0].get_text(strip=True)),
             'yomi':     clean_yomi(tds[1].get_text(strip=True)),
-            'party':    normalize_party(tds[2].get_text(strip=True)),
+            'party':    normalize_party(tds[2].get_text(strip=True), '参議院'),
             'district': tds[3].get_text(strip=True),
-            'term':     wareki_to_yyyymmdd(tds[4].get_text(strip=True)),
-            'wins':     '',
             'img_url':  (
                 f"https://www.sangiin.go.jp/japanese/joho1/kousei/giin/photo/g{pid}.jpg"
                 if pid else ''
@@ -215,11 +198,11 @@ def main():
     data = shugiin + sangiin
     if data:
         df = pd.DataFrame(data)
-        df.to_csv('_data/politicians.csv', index=False, encoding='utf-8-sig')
+        # BOMなしUTF-8で保存（JekyllのCSV読み込みでBOMが列名認識を妨げるため）
+        df.to_csv('_data/politicians.csv', index=False, encoding='utf-8')
         print(f"✅ 完了: {len(df)}名のデータを _data/politicians.csv に保存しました。")
         print(df[['chamber', 'name', 'party', 'district']].head(10).to_string(index=False))
 
-        # 党名一覧を表示して確認
         print("\n=== 取得後の party 一覧 ===")
         for party, count in df['party'].value_counts().items():
             print(f"  {party}: {count}名")

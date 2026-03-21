@@ -21,7 +21,7 @@ title: 日本の政治
   <div class="section-block">
     <div class="section-header">
       <h2 class="section-title">現在の議席配分</h2>
-      <p class="section-subtitle">グラフをクリックして政党を選択 ― 一覧に反映されます</p>
+      <p class="section-subtitle">グラフをクリックして政党を選択</p>
       <div class="section-mark"></div>
     </div>
     <div class="chart-grid">
@@ -46,7 +46,6 @@ title: 日本の政治
   <div class="section-block">
     <div class="section-header">
       <h2 class="section-title">国会議員一覧</h2>
-      <p class="section-subtitle">衆議院・参議院 全議員</p>
       <div class="section-mark"></div>
     </div>
     <table id="politicianTable" class="display">

@@ -14,7 +14,6 @@ defaults:
     values:
       layout: "default"
 
-# テーマのレイアウトをすべて除外
 exclude:
-  - "*.scss"
-  - vendor
+  - README.md
+  - vendor/

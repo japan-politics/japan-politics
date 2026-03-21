@@ -162,8 +162,8 @@ body {
 /* ── グラフグリッド ── */
 .chart-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(3, 1fr);  /* 常に3列 */
+  gap: 2rem;
   align-items: start;
 }
 
@@ -172,6 +172,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: .85rem;
+  min-width: 0;   /* グリッドオーバーフロー防止 */
 }
 
 .chart-label {
@@ -187,7 +188,10 @@ body {
 .chart-label-syu  { color: var(--shu);    border-color: var(--shu);    }
 .chart-label-san  { color: var(--moegi);  border-color: var(--moegi);  }
 
-.chart-cell canvas { max-width: 240px; width: 100%; }
+.chart-cell canvas {
+  max-width: 200px;
+  width: 100%;
+}
 
 /* ── リセットボタン ── */
 .reset-btn {
@@ -425,4 +429,18 @@ footer::before {
 @media (max-width: 480px) {
   .nav-links a { font-size: .72rem; padding: 0 .5rem; }
   .chart-label { font-size: 0.65rem; }
+}
+
+/* ── 写真プレースホルダー ── */
+.photo-placeholder {
+  width: 52px;
+  height: 68px;
+  background: #e8e2d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--ink-light);
+  font-family: var(--sans);
+  border: 1px solid var(--rule);
 }
