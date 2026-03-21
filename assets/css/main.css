@@ -172,16 +172,14 @@ body {
 .chart-cell {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: .85rem;
+  align-items: stretch;   /* 凡例をcell幅いっぱいに */
+  gap: 1rem;
   min-width: 0;
 }
 
-/* グラフ本体を囲むラッパー: サイズを固定して統一 */
-.chart-canvas-wrap {
-  width: 260px;
-  height: 260px;
-  flex-shrink: 0;
+.chart-cell canvas {
+  display: block;
+  margin: 0 auto;         /* canvasは中央 */
 }
 
 .chart-label {
@@ -200,36 +198,54 @@ body {
 .ruling-party-label { font-weight: 700; }
 .chart-label-san  { color: var(--moegi);  border-color: var(--moegi);  }
 
-.chart-cell canvas {
+.chart-cell > canvas {
   width: 260px !important;
   height: 260px !important;
+  flex-shrink: 0;
 }
 
 /* 凡例を2列・左寄せ */
 .chart-legend {
-  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px 12px;
-  margin-top: .5rem;
+  gap: 5px 16px;
   font-family: var(--sans);
   font-size: 0.68rem;
   color: var(--ink-mid);
+  padding: 0 4px;
 }
 
 .chart-legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  overflow: hidden;
+  gap: 5px;
+  cursor: pointer;
+  transition: opacity .15s;
+  min-width: 0;
 }
+
+.chart-legend-item:hover { opacity: .75; }
 
 .chart-legend-dot {
   width: 10px;
   height: 10px;
   border-radius: 2px;
   flex-shrink: 0;
+}
+
+.chart-legend-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-legend-count {
+  flex-shrink: 0;
+  width: 2.4em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-light);
 }
 
 /* ── リセットボタン ── */

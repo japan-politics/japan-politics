@@ -46,22 +46,22 @@ const centerTextPlugin = {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     if (selected.size === 0) {
-      ctx.font      = `600 1.4rem 'Noto Serif JP', serif`;
+      ctx.font      = `700 2rem 'Noto Serif JP', serif`;
       ctx.fillStyle = '#1a1410';
-      ctx.fillText(total, cx, cy - 8);
-      ctx.font      = `400 0.68rem 'Noto Sans JP', sans-serif`;
+      ctx.fillText(total, cx, cy - 10);
+      ctx.font      = `400 0.75rem 'Noto Sans JP', sans-serif`;
       ctx.fillStyle = '#5a5048';
-      ctx.fillText('総議席', cx, cy + 14);
+      ctx.fillText('総議席', cx, cy + 16);
     } else {
-      ctx.font      = `600 1.3rem 'Noto Serif JP', serif`;
+      ctx.font      = `700 1.8rem 'Noto Serif JP', serif`;
       ctx.fillStyle = '#1a1410';
-      ctx.fillText(selSeats, cx, cy - 15);
-      ctx.font      = `300 0.58rem 'Noto Sans JP', sans-serif`;
+      ctx.fillText(selSeats, cx, cy - 18);
+      ctx.font      = `300 0.62rem 'Noto Sans JP', sans-serif`;
       ctx.fillStyle = '#b0a090';
-      ctx.fillText('───────', cx, cy + 1);
-      ctx.font      = `400 0.8rem 'Noto Serif JP', serif`;
+      ctx.fillText('───────', cx, cy + 2);
+      ctx.font      = `500 0.9rem 'Noto Serif JP', serif`;
       ctx.fillStyle = '#3a2e22';
-      ctx.fillText(total, cx, cy + 17);
+      ctx.fillText(total, cx, cy + 20);
     }
     ctx.restore();
   }
@@ -95,8 +95,9 @@ function renderChart(id, obj, houseKey) {
         legend: { display: false }  // 組み込み凡例を非表示、カスタム凡例を使用
       },
       onClick(e, elements) {
-        if (!elements.length) return;
-        toggleSlice(this, elements[0].index, houseKey);
+        if (elements && elements.length > 0) {
+          toggleSlice(this, elements[0].index, houseKey);
+        }
       },
     }
   });
