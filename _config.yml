@@ -7,6 +7,14 @@ url: "https://japan-politics.github.io"
 kramdown:
   input: GFM
 
+plugins:
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-paginate
+  - jekyll-seo-tag
+  - jekyll-github-metadata
+
 defaults:
   - scope:
       path: ""
@@ -17,3 +25,4 @@ defaults:
 exclude:
   - README.md
   - vendor/
+  - test_output.txt
