@@ -1,20 +1,23 @@
-const rulingParties = ['自由民主党・無所属の会'];
+/* ============================================================
+   政党名・グループ定義
+   ============================================================ */
+const rulingParties = ['自由民主党']; // 短縮名に合わせる
 
 const partyColors = {
-  '自由民主党・無所属の会':  '#3a5f8a',
-  '中道改革連合':            '#7a5c3a',
-  '日本維新の会':            '#4a7c5f',
-  '国民民主党・無所属クラブ':'#5a5a7a',
-  '国民民主党・新緑風会':    '#5a5a7a',
-  '参政党':                  '#4a6a4a',
-  'チームみらい':            '#3a7a5a',
-  '日本共産党':              '#7a3a4a',
-  '社会民主党':              '#2a6b6b',
-  'れいわ新選組':            '#6a3a7a',
-  '日本保守党':              '#7a5a3a',
-  '沖縄の風':                '#3a7a6a',
-  '無所属':                  '#888780',
+  '自由民主党':   '#3a5f8a',
+  '中道改革連合': '#7a5c3a', // 立憲・公明を集約
+  '日本維新の会': '#4a7c5f',
+  '国民民主党':   '#5a5a7a',
+  '参政党':       '#4a6a4a',
+  'チームみらい': '#3a7a5a',
+  '日本共産党':   '#7a3a4a',
+  '社会民主党':   '#2a6b6b',
+  'れいわ新選組': '#6a3a7a',
+  '日本保守党':   '#7a5a3a',
+  '沖縄の風':     '#3a7a6a',
+  '無所属':       '#888780',
 };
+
 const fallbackColors = [
   '#3a5f8a','#4a7c5f','#8a6a2a','#7a5c3a','#5a5a7a',
   '#7a3a4a','#4a6a4a','#2a6b6b','#6a3a7a','#888780'
@@ -23,6 +26,33 @@ const fallbackColors = [
 let activeHouse = null;
 const chartInstances = {};
 
+/**
+ * 政党名の正規化
+ * 1. 「・」以降を削除（無所属の会、無所属クラブなど）
+ * 2. 「新緑風会」を削除
+ * 3. 立憲・公明を「中道改革連合」へ集約
+ */
+function normalizeName(name) {
+  if (!name) return "無所属";
+  let n = name.split('・')[0].replace("新緑風会", "").trim();
+  if (n.includes("立憲民主党") || n.includes("公明党")) {
+    return "中道改革連合";
+  }
+  return n;
+}
+
+/**
+ * グラフ描画前のデータ集計
+ */
+function normalizeData(rawData) {
+  let normalized = {};
+  for (let party in rawData) {
+    let cleanName = normalizeName(party);
+    normalized[cleanName] = (normalized[cleanName] || 0) + rawData[party];
+  }
+  return normalized;
+}
+
 function sortPartyData(obj) {
   const entries = Object.entries(obj);
   const ruling    = entries.filter(([l]) =>  rulingParties.includes(l)).sort((a,b) => b[1]-a[1]);
@@ -30,6 +60,7 @@ function sortPartyData(obj) {
   return [...ruling, ...nonRuling];
 }
 
+/* ── 中央文字プラグイン (サイズ強化版) ── */
 const centerTextPlugin = {
   id: 'centerText',
   afterDraw(chart) {
@@ -45,23 +76,24 @@ const centerTextPlugin = {
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+
     if (selected.size === 0) {
-      ctx.font      = `600 1.4rem 'Noto Serif JP', serif`;
+      ctx.font      = `600 2.2rem 'Noto Serif JP', serif`;
       ctx.fillStyle = '#1a1410';
       ctx.fillText(total, cx, cy - 8);
-      ctx.font      = `400 0.68rem 'Noto Sans JP', sans-serif`;
+      ctx.font      = `500 0.85rem 'Noto Sans JP', sans-serif`;
       ctx.fillStyle = '#5a5048';
-      ctx.fillText('総議席', cx, cy + 14);
+      ctx.fillText('総議席', cx, cy + 22);
     } else {
-      ctx.font      = `600 1.3rem 'Noto Serif JP', serif`;
+      ctx.font      = `600 2.0rem 'Noto Serif JP', serif`;
       ctx.fillStyle = '#1a1410';
       ctx.fillText(selSeats, cx, cy - 15);
-      ctx.font      = `300 0.58rem 'Noto Sans JP', sans-serif`;
+      ctx.font      = `300 0.6rem 'Noto Sans JP', sans-serif`;
       ctx.fillStyle = '#b0a090';
-      ctx.fillText('───────', cx, cy + 1);
-      ctx.font      = `400 0.8rem 'Noto Serif JP', serif`;
+      ctx.fillText('───────', cx, cy + 2);
+      ctx.font      = `500 1.0rem 'Noto Serif JP', serif`;
       ctx.fillStyle = '#3a2e22';
-      ctx.fillText(total, cx, cy + 17);
+      ctx.fillText(total, cx, cy + 22);
     }
     ctx.restore();
   }
@@ -70,8 +102,7 @@ Chart.register(centerTextPlugin);
 
 function renderChart(id, obj, houseKey) {
   const canvas = document.getElementById(id);
-  if (!canvas) return;
-  if (Object.keys(obj).length === 0) return;
+  if (!canvas || Object.keys(obj).length === 0) return;
 
   const sorted = sortPartyData(obj);
   const labels = sorted.map(([l]) => l);
@@ -85,18 +116,23 @@ function renderChart(id, obj, houseKey) {
       datasets: [{
         data: values,
         backgroundColor: [...bg],
-        borderColor: labels.map(l => rulingParties.includes(l) ? '#9a6e28' : '#f8f4ee'),
+        // rulingParties(自由民主党)に金枠を適用
+        borderColor: labels.map(l => rulingParties.includes(l) ? '#9a6e28' : '#ffffff'),
         borderWidth: labels.map(l => rulingParties.includes(l) ? 4 : 1),
+        hoverOffset: 12
       }]
     },
     options: {
       cutout: '68%',
+      maintainAspectRatio: false,
       plugins: {
-        legend: { display: false }  // 組み込み凡例を非表示、カスタム凡例を使用
+        legend: { display: false },
+        tooltip: { enabled: true }
       },
       onClick(e, elements) {
-        if (!elements.length) return;
-        toggleSlice(this, elements[0].index, houseKey);
+        if (elements && elements.length > 0) {
+          toggleSlice(this, elements[0].index, houseKey);
+        }
       },
     }
   });
@@ -105,16 +141,13 @@ function renderChart(id, obj, houseKey) {
   chart._origBg = [...bg];
   chartInstances[houseKey] = chart;
 
-  // カスタム2列凡例を描画
   buildLegend(chart, id, houseKey, labels, values, bg);
 }
 
 function buildLegend(chart, canvasId, houseKey, labels, values, bg) {
-  // canvas の親の .chart-cell に凡例を追加
   const cell = document.getElementById(canvasId).closest('.chart-cell');
   if (!cell) return;
 
-  // 既存の凡例を削除
   const existing = cell.querySelector('.chart-legend');
   if (existing) existing.remove();
 
@@ -124,20 +157,17 @@ function buildLegend(chart, canvasId, houseKey, labels, values, bg) {
   labels.forEach((label, i) => {
     const item = document.createElement('div');
     item.className = 'chart-legend-item';
-    item.style.cursor = 'pointer';
-
+    
     const dot = document.createElement('span');
     dot.className = 'chart-legend-dot';
     dot.style.background = bg[i];
+    
     if (rulingParties.includes(label)) {
-      dot.style.outline = '2px solid #9a6e28';
-      dot.style.outlineOffset = '1px';
+      dot.classList.add('ruling-dot');
     }
 
     const text = document.createElement('span');
-    text.textContent = `${label}  ${values[i]}`;
-    text.style.overflow = 'hidden';
-    text.style.textOverflow = 'ellipsis';
+    text.textContent = `${label} ${values[i]}`;
 
     item.appendChild(dot);
     item.appendChild(text);
@@ -155,7 +185,11 @@ function toggleSlice(chart, idx, houseKey) {
   activeHouse = houseKey;
 
   const sel = chart._selectedIndices;
-  sel.has(idx) ? sel.delete(idx) : sel.add(idx);
+  if (sel.has(idx)) {
+    sel.delete(idx);
+  } else {
+    sel.add(idx);
+  }
   updateChartColors(chart);
 
   const selectedParties = sel.size > 0 ? [...sel].map(i => chart.data.labels[i]) : null;
@@ -171,15 +205,12 @@ function updateChartColors(chart) {
   const sel = chart._selectedIndices;
   const bg  = chart._origBg;
   chart.data.datasets[0].backgroundColor = bg.map((c, i) =>
-    sel.size === 0 || sel.has(i) ? c : c + '44'
+    sel.size === 0 || sel.has(i) ? c : c + '33'
   );
-  chart.update('none');
+  chart.update();
 
-  // カスタム凡例の透明度も更新
   const canvas = chart.canvas;
-  if (!canvas) return;
   const cell = canvas.closest('.chart-cell');
-  if (!cell) return;
   const items = cell.querySelectorAll('.chart-legend-item');
   items.forEach((item, i) => {
     item.style.opacity = sel.size === 0 || sel.has(i) ? '1' : '0.3';
@@ -199,11 +230,15 @@ function filterTable(houseKey, parties) {
   if (houseKey || parties) {
     $.fn.dataTable.ext.search.push(function(settings, data) {
       const chamberCell = data[1] || '';
-      const partyCell   = data[3] || '';
+      const partyCell   = data[3] || ''; 
+      
       if (houseKey === 'syu' && !chamberCell.includes('衆議院')) return false;
       if (houseKey === 'san' && !chamberCell.includes('参議院')) return false;
+      
       if (parties && parties.length > 0) {
-        if (!parties.some(p => partyCell.includes(p))) return false;
+        // テーブル内の生テキストも正規化して比較する
+        const normalizedCell = normalizeName(partyCell);
+        if (!parties.some(p => normalizedCell === p)) return false;
       }
       return true;
     });
@@ -218,32 +253,31 @@ function resetAll() {
   });
   activeHouse = null;
 
-  // DataTablesのカスタムフィルタを解除して再描画
   if ($.fn.DataTable.isDataTable('#politicianTable')) {
     $.fn.dataTable.ext.search = [];
     $('#politicianTable').DataTable().draw();
   }
-
-  // 凡例の透明度を全てリセット
-  document.querySelectorAll('.chart-legend-item').forEach(item => {
-    item.style.opacity = '1';
-  });
 }
 
 function setupDashboard(dataAll, dataSyu, dataSan) {
-  renderChart('chartAll', dataAll, 'all');
-  renderChart('chartSyu', dataSyu, 'syu');
-  renderChart('chartSan', dataSan, 'san');
+  // 描画・集計前にデータを正規化
+  const normAll = normalizeData(dataAll);
+  const normSyu = normalizeData(dataSyu);
+  const normSan = normalizeData(dataSan);
+
+  renderChart('chartAll', normAll, 'all');
+  renderChart('chartSyu', normSyu, 'syu');
+  renderChart('chartSan', normSan, 'san');
 
   $('#politicianTable').DataTable({
     language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json' },
     pageLength: 100,
     dom: 'tip', 
-    order: [[7, 'desc']], // 初期状態で収支の多い順に並べる（任意）
+    order: [[7, 'desc']], 
     columnDefs: [
       {
         targets: "_all",
-        className: "dt-center" // 全セルを中央寄せ
+        className: "dt-center" 
       },
       {
         targets: 0,
@@ -258,7 +292,6 @@ function setupDashboard(dataAll, dataSyu, dataSan) {
           ? `<span class="badge ${d === '衆議院' ? 'badge-shugiin' : 'badge-sangiin'}">${d}</span>`
           : ''
       },
-      // 5列目以降（収入・支出・収支）を数値として正しくソート
       { targets: [5, 6, 7], type: "num-fmt" }
     ]
   });
