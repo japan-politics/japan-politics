@@ -15,6 +15,8 @@ const partyColors = {
   'みらいの風':       '#3a6a7a',
   '日本保守党':       '#7a5a3a',
   '沖縄の風':         '#3a7a6a',
+  '中道改革連合':     '#5a6a7a',
+  'チームみらい':     '#3a7a5a',
   '無所属':           '#888780',
 };
 const fallbackColors = [
@@ -31,9 +33,6 @@ function sortPartyData(obj) {
   const nonRuling = entries.filter(([l]) => !rulingParties.includes(l)).sort((a,b) => b[1]-a[1]);
   return [...ruling, ...nonRuling];
 }
-
-// 凡例も議席数降順に並べるカスタムプラグイン
-// Chart.jsの凡例はdata順なので、sortPartyDataの順序がそのまま反映される
 
 const centerTextPlugin = {
   id: 'centerText',
@@ -99,16 +98,12 @@ function renderChart(id, obj, houseKey) {
       plugins: {
         legend: {
           position: 'bottom',
-          align: 'start',        // 左揃えで整列
+          align: 'start',
           labels: {
             font: { family: "'Noto Sans JP', sans-serif", size: 11 },
             color: '#3a2e22',
-            boxWidth: 12,
-            boxHeight: 12,
-            padding: 10,
-            pointStyle: 'rect',
-            usePointStyle: true,
-            // 2列表示のため最大幅を制限
+            boxWidth: 12, boxHeight: 12, padding: 10,
+            pointStyle: 'rect', usePointStyle: true,
             generateLabels(chart) {
               const data = chart.data;
               return data.labels.map((label, i) => ({
@@ -208,24 +203,6 @@ function setupDashboard(dataAll, dataSyu, dataSan) {
 
   $('#politicianTable').DataTable({
     language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json' },
-    pageLength: 100,
-    columnDefs: [
-      {
-        targets: 0,
-        orderable: false,
-        render: d => d
-          ? `<img src="${d}" class="giin-photo" loading="lazy" onerror="this.src='https://placehold.jp/24/d8d0c4/7a6e5f/52x68.png?text=写真'">`
-          : `<div class="photo-placeholder">写真</div>`
-      },
-      {
-        targets: 1,
-        render: d => d
-          ? `<span class="badge ${d === '衆議院' ? 'badge-shugiin' : 'badge-sangiin'}">${d}</span>`
-          : ''
-      }
-    ]
-  });
-},
     pageLength: 100,
     columnDefs: [
       {
