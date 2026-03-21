@@ -20,8 +20,8 @@ title: 日本の政治
 
   <div class="section-block">
     <div class="section-header">
-      <h2 class="section-title">議席勢力分析</h2>
-      <p class="section-subtitle">現在の議席配分 ― 国会</p>
+      <h2 class="section-title">現在の議席配分</h2>
+      <p class="section-subtitle">グラフをクリックして政党を選択 ― 一覧に反映されます</p>
       <div class="section-mark"></div>
     </div>
     <div class="chart-grid">
@@ -38,21 +38,24 @@ title: 日本の政治
         <canvas id="chartSan"></canvas>
       </div>
     </div>
+    <div style="text-align:center;margin-top:1.75rem;">
+      <button id="resetBtn" onclick="resetAll()" class="reset-btn">選択をリセット</button>
+    </div>
   </div>
 
   <div class="section-block">
     <div class="section-header">
-      <h2 class="section-title">議員名簿</h2>
-      <p class="section-subtitle">国会議員一覧</p>
+      <h2 class="section-title">国会議員一覧</h2>
+      <p class="section-subtitle">衆議院・参議院 全議員</p>
       <div class="section-mark"></div>
     </div>
     <table id="politicianTable" class="display">
       <thead>
         <tr>
-          <th>写　真</th>
-          <th>院　名</th>
-          <th>氏　名</th>
-          <th>会　派</th>
+          <th>写真</th>
+          <th>院名</th>
+          <th>氏名・ふりがな</th>
+          <th>会派</th>
           <th>選挙区</th>
         </tr>
       </thead>
@@ -61,7 +64,7 @@ title: 日本の政治
         <tr>
           <td>{{ p.img_url }}</td>
           <td>{{ p.chamber }}</td>
-          <td>{{ p.name }}</td>
+          <td data-sort="{{ p.yomi }}">{{ p.name }}<br><span class="yomi">{{ p.yomi }}</span></td>
           <td>{{ p.party }}</td>
           <td>{{ p.district }}</td>
         </tr>

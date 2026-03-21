@@ -9,6 +9,39 @@ from bs4 import BeautifulSoup
 import os, time, re
 
 
+# ─── 党名正規化マップ ─────────────────────────────────────────
+# スクレイピングで取得される略称 → 正式名称
+PARTY_MAP = {
+    # 衆議院
+    '自民':    '自由民主党',
+    '中道':    '中道改革連合',
+    '維新':    '日本維新の会',
+    '国民':    '国民民主党',
+    '共産':    '日本共産党',
+    '参政':    '参政党',
+    'みらい':  'チームみらい',
+    '無':      '無所属',
+    # 参議院
+    '自民':    '自由民主党',
+    '立憲':    '中道改革連合',
+    '民主':    '国民民主党',
+    '公明':    '中道改革連合',
+    '維新':    '日本維新の会',
+    '参政':    '参政党',
+    '共産':    '日本共産党',
+    'れ新':    'れいわ新選組',
+    '保守':    '日本保守党',
+    '沖縄':    '沖縄の風',
+    'みら':    'チームみらい',
+    '社民':    '社会民主党',
+    '無所属':    '無所属'
+}
+
+def normalize_party(party: str) -> str:
+    """略称を正式名称に変換。マップにない場合はそのまま返す"""
+    return PARTY_MAP.get(party.strip(), party.strip())
+
+
 # ─── 共通ユーティリティ ───────────────────────────────────────
 
 def clean_name(s: str) -> str:
@@ -29,9 +62,9 @@ def wareki_to_yyyymmdd(s: str) -> str:
     if not s:
         return ''
     for pattern, base in [
-        (r'令和\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日',  _REIWA_BASE),
-        (r'平成\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日',  _HEISEI_BASE),
-        (r'昭和\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日',  _SHOWA_BASE),
+        (r'令和\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日', _REIWA_BASE),
+        (r'平成\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日', _HEISEI_BASE),
+        (r'昭和\s*(\d+)\s*年\s*(\d+)\s*月\s*(\d+)\s*日', _SHOWA_BASE),
     ]:
         m = re.match(pattern, s)
         if m:
@@ -74,7 +107,7 @@ def get_shugiin_data():
                     'chamber':  '衆議院',
                     'name':     clean_name(kanji),
                     'yomi':     clean_yomi(tds[1].get_text(separator='', strip=True)),
-                    'party':    tds[2].get_text(strip=True),
+                    'party':    normalize_party(tds[2].get_text(strip=True)),
                     'district': tds[3].get_text(strip=True),
                     'term':     '',
                     'wins':     tds[4].get_text(strip=True),
@@ -149,7 +182,7 @@ def _parse_sangiin_html(html_text: str):
             'chamber':  '参議院',
             'name':     clean_name(tds[0].get_text(strip=True)),
             'yomi':     clean_yomi(tds[1].get_text(strip=True)),
-            'party':    tds[2].get_text(strip=True),
+            'party':    normalize_party(tds[2].get_text(strip=True)),
             'district': tds[3].get_text(strip=True),
             'term':     wareki_to_yyyymmdd(tds[4].get_text(strip=True)),
             'wins':     '',
@@ -185,6 +218,11 @@ def main():
         df.to_csv('_data/politicians.csv', index=False, encoding='utf-8-sig')
         print(f"✅ 完了: {len(df)}名のデータを _data/politicians.csv に保存しました。")
         print(df[['chamber', 'name', 'party', 'district']].head(10).to_string(index=False))
+
+        # 党名一覧を表示して確認
+        print("\n=== 取得後の party 一覧 ===")
+        for party, count in df['party'].value_counts().items():
+            print(f"  {party}: {count}名")
     else:
         print("❌ データが取得できませんでした。")
 
