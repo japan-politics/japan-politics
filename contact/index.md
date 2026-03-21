@@ -1,58 +1,86 @@
 ---
 layout: default
-title: お問い合わせ
+title: 日本の政治
 ---
+
+{% assign all = site.data.politicians %}
+{% assign syu = all | where: "chamber", "衆議院" %}
+{% assign san = all | where: "chamber", "参議院" %}
+
+{% assign g_all = all | group_by: "party" %}
+{% assign g_syu = syu | group_by: "party" %}
+{% assign g_san = san | group_by: "party" %}
+
+<script>
+var dataAll = { {% for i in g_all %}{{ i.name | jsonify }}:{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} };
+var dataSyu = { {% for i in g_syu %}{{ i.name | jsonify }}:{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} };
+var dataSan = { {% for i in g_san %}{{ i.name | jsonify }}:{{ i.size }}{% unless forloop.last %},{% endunless %}{% endfor %} };
+</script>
 
 {% include header.html %}
 
 <div class="dashboard-container">
+
   <div class="section-block">
     <div class="section-header">
-      <h2 class="section-title">お問い合わせ</h2>
+      <h2 class="section-title">現在の議席配分</h2>
+      <p class="section-subtitle">グラフをクリックして政党を選択</p>
       <div class="section-mark"></div>
     </div>
-
-    <div class="contact-content">
-      <p class="contact-lead">データの誤り・ご意見・ご要望などは以下のフォームよりお送りください。</p>
-
-      <form class="contact-form" action="https://formsubmit.co/workaddress330@gmail.com" method="POST">
-        <!-- FormSubmit の設定 -->
-        <input type="hidden" name="_subject" value="【日本の政治】お問い合わせ">
-        <input type="hidden" name="_language" value="ja">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_next" value="{{ '/' | absolute_url }}contact/thanks/">
-
-        <div class="form-group">
-          <label class="form-label" for="name">お名前</label>
-          <input class="form-input" type="text" id="name" name="name" placeholder="山田 太郎" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="email">メールアドレス</label>
-          <input class="form-input" type="email" id="email" name="email" placeholder="example@example.com" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="subject">件名</label>
-          <select class="form-input" id="subject" name="subject" required>
-            <option value="" disabled selected>選択してください</option>
-            <option value="データの誤りについて">データの誤りについて</option>
-            <option value="機能の要望">機能の要望</option>
-            <option value="その他">その他</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="message">お問い合わせ内容</label>
-          <textarea class="form-input form-textarea" id="message" name="message" rows="6" placeholder="お問い合わせ内容をご記入ください" required></textarea>
-        </div>
-
-        <div class="form-submit">
-          <button type="submit" class="submit-btn">送信する</button>
-        </div>
-      </form>
+    <div class="chart-grid">
+      <div class="chart-cell">
+        <span class="chart-label chart-label-all">国　会</span>
+        <canvas id="chartAll"></canvas>
+      </div>
+      <div class="chart-cell">
+        <span class="chart-label chart-label-syu">衆議院</span>
+        <canvas id="chartSyu"></canvas>
+      </div>
+      <div class="chart-cell">
+        <span class="chart-label chart-label-san">参議院</span>
+        <canvas id="chartSan"></canvas>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.75rem;">
+      <button id="resetBtn" onclick="resetAll()" class="reset-btn">選択をリセット</button>
     </div>
   </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-title">国会議員一覧</h2>
+      <div class="section-mark"></div>
+    </div>
+    <table id="politicianTable" class="display">
+      <thead>
+        <tr>
+          <th>写真</th>
+          <th>院名</th>
+          <th>氏名・ふりがな</th>
+          <th>会派</th>
+          <th>選挙区</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in site.data.politicians %}
+        <tr>
+          <td>{{ p.img_url }}</td>
+          <td>{{ p.chamber }}</td>
+          <td data-sort="{{ p.yomi }}">{{ p.name }}<br><span class="yomi">{{ p.yomi }}</span></td>
+          <td>{{ p.party }}</td>
+          <td>{{ p.district }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
 </div>
 
 {% include footer.html %}
+
+<script>
+$(document).ready(function() {
+  setupDashboard(dataAll, dataSyu, dataSan);
+});
+</script>
