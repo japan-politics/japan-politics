@@ -95,11 +95,12 @@ function renderChart(id, obj, houseKey) {
       datasets: [{
         data: values,
         backgroundColor: [...bg],
-        borderColor:  labels.map(l => rulingParties.includes(l) ? '#c8922a' : 'rgba(248,244,238,0.8)'),
-        borderWidth:  labels.map(l => rulingParties.includes(l) ? 6 : 1),
-        hoverOffset:  6,
-        hoverBorderWidth: labels.map(l => rulingParties.includes(l) ? 8 : 3),
-        hoverBorderColor: labels.map(l => rulingParties.includes(l) ? '#c8922a' : '#d8d0c4'),
+        borderColor:  labels.map(l => rulingParties.includes(l) ? '#f0a830' : 'rgba(248,244,238,0.8)'),
+        borderWidth:  labels.map(l => rulingParties.includes(l) ? 8 : 1),
+        offset:       labels.map(l => rulingParties.includes(l) ? 6 : 0),
+        hoverOffset:  8,
+        hoverBorderWidth: labels.map(l => rulingParties.includes(l) ? 10 : 3),
+        hoverBorderColor: labels.map(l => rulingParties.includes(l) ? '#f0a830' : '#d8d0c4'),
       }]
     },
     options: {
@@ -109,12 +110,18 @@ function renderChart(id, obj, houseKey) {
         tooltip: { enabled: true }
       },
       onClick(e, elements) {
-        if (elements && elements.length > 0) {
-          toggleSlice(this, elements[0].index, houseKey);
+        const pts = (elements && elements.length > 0)
+          ? elements
+          : this.getElementsAtEventForMode(e, 'nearest', { intersect: false }, false);
+        if (pts && pts.length > 0) {
+          toggleSlice(this, pts[0].index, houseKey);
         }
       },
       onHover(e, elements) {
-        e.native.target.style.cursor = (elements && elements.length > 0) ? 'pointer' : 'default';
+        const pts = (elements && elements.length > 0)
+          ? elements
+          : this.getElementsAtEventForMode(e, 'nearest', { intersect: false }, false);
+        e.native.target.style.cursor = (pts && pts.length > 0) ? 'pointer' : 'default';
       },
     }
   });
@@ -244,8 +251,11 @@ function resetAll() {
   activeHouse = null;
   if ($.fn.DataTable.isDataTable('#politicianTable')) {
     $.fn.dataTable.ext.search = [];
-    $('#politicianTable').DataTable().draw();
+    $('#politicianTable').DataTable().search('').draw();
   }
+  // 検索窓をクリア
+  const searchInput = document.querySelector('input[type="search"]');
+  if (searchInput) searchInput.value = '';
   document.querySelectorAll('.chart-legend-item').forEach(item => {
     item.style.opacity = '1';
   });
