@@ -238,8 +238,13 @@ function setupDashboard(dataAll, dataSyu, dataSan) {
   $('#politicianTable').DataTable({
     language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json' },
     pageLength: 100,
-    dom: 'tip',  // デフォルトのlength・search・infoを非表示（カスタムに置き換え）
+    dom: 'tip', 
+    order: [[7, 'desc']], // 初期状態で収支の多い順に並べる（任意）
     columnDefs: [
+      {
+        targets: "_all",
+        className: "dt-center" // 全セルを中央寄せ
+      },
       {
         targets: 0,
         orderable: false,
@@ -252,7 +257,9 @@ function setupDashboard(dataAll, dataSyu, dataSan) {
         render: d => d
           ? `<span class="badge ${d === '衆議院' ? 'badge-shugiin' : 'badge-sangiin'}">${d}</span>`
           : ''
-      }
+      },
+      // 5列目以降（収入・支出・収支）を数値として正しくソート
+      { targets: [5, 6, 7], type: "num-fmt" }
     ]
   });
 }

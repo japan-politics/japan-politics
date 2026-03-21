@@ -742,3 +742,57 @@ footer::before {
 @media (max-width: 768px) {
   .back-to-top { bottom: 1rem; right: 1rem; }
 }
+
+/* ── テーブル要素の完全中央寄せ ── */
+#politicianTable th, 
+#politicianTable td {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* ── 収支棒グラフ（和モダン・デザイン） ── */
+.balance-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* セル内中央寄せ */
+  gap: 12px;
+  min-width: 150px; /* 列が潰れないよう確保 */
+}
+
+.balance-bar-container {
+  flex: 1;
+  max-width: 70px;
+  height: 8px;
+  background: var(--rule); /* 既存の薄いグレー変数 */
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.balance-fill {
+  height: 100%;
+  transition: width 0.6s ease;
+}
+
+/* 収支ポジティブ: 萌黄 (moegi) */
+.balance-fill.positive { background-color: var(--moegi); }
+/* 収支ネガティブ: 朱 (shu) */
+.balance-fill.negative { background-color: var(--shu); }
+
+.balance-text {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  min-width: 70px;
+  text-align: right;
+  font-variant-numeric: tabular-nums; /* 数字の幅を一定に */
+}
+
+.text-plus { color: var(--moegi); }
+.text-minus { color: var(--shu); }
+
+/* モバイル対応：収支列の幅調整 */
+@media (max-width: 768px) {
+  .balance-wrapper { min-width: 100px; gap: 5px; }
+  .balance-bar-container { display: none; } /* スマホではグラフを隠して数字のみに */
+}
