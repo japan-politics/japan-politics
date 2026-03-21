@@ -115,6 +115,12 @@ function renderChart(id, obj, houseKey) {
   const values = sorted.map(([, v]) => v);
   const bg = labels.map((l, i) => partyColors[l] || fallbackColors[i % fallbackColors.length]);
 
+  // canvasサイズをHTML属性で固定（CSS上書きによる座標ズレを防ぐ）
+  canvas.width  = 260;
+  canvas.height = 260;
+  canvas.style.width  = '260px';
+  canvas.style.height = '260px';
+
   const chart = new Chart(canvas, {
     type: 'doughnut',
     data: {
@@ -124,12 +130,13 @@ function renderChart(id, obj, houseKey) {
         backgroundColor: [...bg],
         borderColor:  labels.map(l => rulingParties.includes(l) ? '#f0a830' : 'rgba(248,244,238,0.6)'),
         borderWidth:  labels.map(l => rulingParties.includes(l) ? 7 : 1),
-        hoverOffset:  4,
-        hoverBorderWidth: labels.map(l => rulingParties.includes(l) ? 9 : 2),
-        hoverBorderColor: labels.map(l => rulingParties.includes(l) ? '#f0a830' : '#d8d0c4'),
+        hoverOffset:  0,
+        hoverBorderWidth: 2,
+        hoverBorderColor: '#d8d0c4',
       }]
     },
     options: {
+      responsive: false,
       cutout: '60%',
       plugins: {
         legend: { display: false },

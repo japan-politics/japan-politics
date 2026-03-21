@@ -215,14 +215,12 @@ body {
 }
 
 .chart-cell > canvas {
-  width: 260px !important;
-  height: 260px !important;
   flex-shrink: 0;
 }
 
-/* 凡例をcanvasと同じ幅に揃える */
+/* 凡例はcell幅いっぱいに */
 .chart-legend-wrap {
-  width: 260px;
+  width: 100%;
 }
 
 /* 凡例を2列・左寄せ */
