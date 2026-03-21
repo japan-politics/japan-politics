@@ -194,24 +194,24 @@ body {
 }
 
 .chart-label-all {
-  color: var(--washi);
-  background: var(--urushi);
+  color: var(--urushi);
+  background: rgba(26,16,8,.06);
   border-color: var(--urushi);
 }
 
 .chart-label-syu {
-  color: var(--washi);
-  background: var(--shu);
-  border-color: var(--shu);
+  color: #6e1408;
+  background: rgba(140,31,16,.06);
+  border-color: #8c1f10;
 }
 
 /* 与党ハイライト凡例 */
 .ruling-party-label { font-weight: 700; }
 
 .chart-label-san {
-  color: var(--washi);
-  background: var(--moegi);
-  border-color: var(--moegi);
+  color: #1e4a2e;
+  background: rgba(42,90,58,.06);
+  border-color: #2a5a3a;
 }
 
 .chart-cell > canvas {
@@ -368,10 +368,9 @@ body {
   line-height: 1.5;
 }
 
-/* 氏名・ふりがな列のみ左寄せ */
-#politicianTable thead th:nth-child(3),
-#politicianTable tbody td:nth-child(3) {
-  text-align: left !important;
+/* ふりがなも中央寄せ */
+.yomi {
+  text-align: center;
 }
 
 /* ふりがな */
@@ -425,9 +424,10 @@ body {
 
 /* ── 議員写真 ── */
 .giin-photo {
-  width: 52px; height: 68px;  /* 少し大きく */
+  width: 52px; height: 68px;
   object-fit: cover;
   display: block;
+  margin: 0 auto;
   border: 1px solid var(--rule);
   filter: sepia(5%) contrast(1.05);
   transition: filter .2s, transform .2s;
@@ -527,6 +527,7 @@ footer::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
   font-size: 0.65rem;
   color: var(--ink-light);
   font-family: var(--sans);
